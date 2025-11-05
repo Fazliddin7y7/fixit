@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { WelcomeScreen } from './components/WelcomeScreen';
-import { LoginScreen } from './components/LoginScreen';
-import { SignupScreen } from './components/SignupScreen';
-import { HomeScreen } from './components/HomeScreen';
-import { SearchFilterScreen } from './components/SearchFilterScreen';
-import { UstaProfileScreen } from './components/UstaProfileScreen';
-import { ChatScreen } from './components/ChatScreen';
-import { UserDashboard } from './components/UserDashboard';
-import { UstaDashboard } from './components/UstaDashboard';
-import { CustomerProfileScreen } from './components/CustomerProfileScreen';
+import { motion, AnimatePresence } from 'framer-motion';
+import { WelcomeScreen } from './../../components/WelcomeScreen';
+import { LoginScreen } from './../../components/LoginScreen';
+import { SignupScreen } from './../../components/SignupScreen';
+import { HomeScreen } from './../../components/HomeScreen';
+import { SearchFilterScreen } from './../../components/SearchFilterScreen';
+import { UstaProfileScreen } from './../../components/UstaProfileScreen';
+import { ChatScreen } from './../../components/ChatScreen';
+import { UserDashboard } from './../../components/UserDashboard';
+import { UstaDashboard } from './../../components/UstaDashboard';
+import { CustomerProfileScreen } from './../../components/CustomerProfileScreen';
 
 type Screen = 
   | 'welcome' 
@@ -27,7 +27,7 @@ type UserRole = 'customer' | 'professional' | null;
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
-  const [userRole, setUserRole] = useState<UserRole>(null);
+  const [usrRole, setUserRole] = useState<UserRole>(null);
 
   const handleSignup = (role: UserRole) => {
     setUserRole(role);

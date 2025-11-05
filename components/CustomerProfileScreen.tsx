@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, User, Mail, Phone, MapPin, Settings, LogOut, Bell, Shield, HelpCircle, ChevronRight, Home, Search, Wrench } from 'lucide-react';
 
 interface CustomerProfileScreenProps {
@@ -107,8 +107,8 @@ export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOr
                 <User className="w-5 h-5 text-blue-500" />
               </div>
               <div className="text-left">
-                <p>Shaxsiy ma'lumotlar</p>
-                <p className="text-gray-400 text-sm">Ma'lumotlarni tahrirlash</p>
+                <p>Shaxsiy ma&apos;lumotlar</p>
+                <p className="text-gray-400 text-sm">Ma&apos;lumotlarni tahrirlash</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -165,7 +165,7 @@ export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOr
               </div>
               <div className="text-left">
                 <p>Yordam</p>
-                <p className="text-gray-400 text-sm">FAQ va qo'llab-quvvatlash</p>
+                <p className="text-gray-400 text-sm">FAQ va qo&apos;llab-quvvatlash</p>
               </div>
             </div>
             <ChevronRight className="w-5 h-5 text-gray-400" />

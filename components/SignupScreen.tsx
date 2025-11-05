@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, User, Mail, Lock, Phone } from 'lucide-react';
 import { useState } from 'react';
 
@@ -30,7 +30,7 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="mb-2">Ro'yxatdan o'tish</h1>
+          <h1 className="mb-2">Ro&apos;yxatdan o&apos;tish</h1>
           <p className="text-gray-400 mb-6">Yangi akkaunt yaratish</p>
 
           <div className="flex gap-3 mb-6">
@@ -113,7 +113,7 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
                 : 'bg-gradient-to-r from-orange-500 to-orange-600'
             } text-white py-4 rounded-2xl shadow-lg mb-6 flex items-center justify-center`}
           >
-            Ro'yxatdan o'tish
+            Ro&apos;yxatdan o&apos;tish
           </motion.button>
 
           <div className="text-center">

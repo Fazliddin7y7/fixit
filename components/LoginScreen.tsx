@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Mail, Lock } from 'lucide-react';
 import { useState } from 'react';
 
@@ -68,9 +68,9 @@ export function LoginScreen({ onBack, onLogin, onSignup }: LoginScreenProps) {
           </motion.button>
 
           <div className="text-center">
-            <span className="text-gray-400">Akkauntingiz yo'qmi? </span>
+            <span className="text-gray-400">Akkauntingiz yo&apos;qmi? </span>
             <button onClick={onSignup} className="text-blue-500">
-              Ro'yxatdan o'tish
+              Ro&apos;yxatdan o&apos;tish
             </button>
           </div>
         </motion.div>

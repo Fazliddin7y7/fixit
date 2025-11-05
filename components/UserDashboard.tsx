@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, CheckCircle, XCircle, MapPin, Calendar, Home, Search, Wrench } from 'lucide-react';
 import { useState } from 'react';
 
@@ -168,7 +168,7 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
                 <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                   <div>
                     <p className="text-gray-400 text-sm">Jami narx</p>
-                    <p className="text-orange-500">{booking.price} so'm</p>
+                    <p className="text-orange-500">{booking.price} so&apos;m</p>
                   </div>
                   <div className="flex gap-2">
                     <motion.button
@@ -190,7 +190,7 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
           ) : (
             <div className="text-center py-12">
               <Clock className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">Faol buyurtmalar yo'q</p>
+              <p className="text-gray-400">Faol buyurtmalar yo&apos;q</p>
             </div>
           )
         ) : (
@@ -229,8 +229,8 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                   <div>
-                    <p className="text-gray-400 text-sm">To'langan</p>
-                    <p className="text-orange-500">{booking.price} so'm</p>
+                    <p className="text-gray-400 text-sm">To&apos;langan</p>
+                    <p className="text-orange-500">{booking.price} so&apos;m</p>
                   </div>
                   {!booking.rated && (
                     <motion.button
@@ -246,7 +246,7 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
           ) : (
             <div className="text-center py-12">
               <CheckCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">Tarix bo'sh</p>
+              <p className="text-gray-400">Tarix bo&apos;sh</p>
             </div>
           )
         )}

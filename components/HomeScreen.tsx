@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Search, Zap, Wrench, Droplet, PaintBucket, Hammer, Wind, Home as HomeIcon } from 'lucide-react';
 
 interface HomeScreenProps {

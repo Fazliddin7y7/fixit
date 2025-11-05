@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Search, SlidersHorizontal, Star, MapPin, Home, Wrench } from 'lucide-react';
 import { useState } from 'react';
 
@@ -118,7 +118,7 @@ export function SearchFilterScreen({ onBack, onSelectUsta, onHomeClick, onOrders
 
           {/* Price Range */}
           <div>
-            <p className="text-gray-400 text-sm mb-2">Narx oralig'i (soat/sum)</p>
+            <p className="text-gray-400 text-sm mb-2">Narx oralig&apos;i (soat/sum)</p>
             <div className="flex gap-3">
               <input
                 type="number"

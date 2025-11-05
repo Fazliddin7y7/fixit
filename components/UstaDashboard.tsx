@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { ArrowLeft, DollarSign, TrendingUp, Users, Calendar, CheckCircle, Clock, Settings, ClipboardList, User, Phone } from 'lucide-react';
 import { useState } from 'react';
 
@@ -106,7 +106,7 @@ export function UstaDashboard({ onBack }: UstaDashboardProps) {
             }`}
           >
             <User className="w-5 h-5" />
-            <span>Ma'lumotlarim</span>
+            <span>Ma&apos;lumotlarim</span>
           </motion.button>
         </div>
       </div>
@@ -158,7 +158,7 @@ export function UstaDashboard({ onBack }: UstaDashboardProps) {
                 <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                   <div>
                     <p className="text-gray-400 text-sm">Narx</p>
-                    <p className="text-orange-500">{booking.price} so'm</p>
+                    <p className="text-orange-500">{booking.price} so&apos;m</p>
                   </div>
                   <div className="flex gap-2">
                     {booking.status === 'pending' ? (
@@ -197,7 +197,7 @@ export function UstaDashboard({ onBack }: UstaDashboardProps) {
               className="bg-[#252b3b] border border-gray-700 rounded-2xl p-6"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3>Profil ma'lumotlari</h3>
+                <h3>Profil ma&apos;lumotlari</h3>
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-xl flex items-center justify-center"
@@ -258,7 +258,7 @@ export function UstaDashboard({ onBack }: UstaDashboardProps) {
                   whileTap={{ scale: 0.97 }}
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl mt-6 flex items-center justify-center"
                 >
-                  Ma'lumotlarni yangilash
+                  Ma&apos;lumotlarni yangilash
                 </motion.button>
               </div>
             </motion.div>

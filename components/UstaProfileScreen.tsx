@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
-import { ArrowLeft, Star, MapPin, Clock, Award, MessageCircle, Phone } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Star, MapPin, Clock, Award, MessageCircle } from 'lucide-react';
 
 interface UstaProfileScreenProps {
   onBack: () => void;
@@ -74,17 +74,17 @@ export function UstaProfileScreen({ onBack, onBooking, onChat }: UstaProfileScre
 
         {/* About */}
         <div className="mb-6">
-          <h3 className="mb-3">Ma'lumot</h3>
+          <h3 className="mb-3">Ma&apos;lumot</h3>
           <p className="text-gray-400 leading-relaxed">
-            8 yillik tajribaga ega professional elektrik. Uy va ofis elektr tarmog'ini 
-            o'rnatish, ta'mirlash va xavfsizlik tekshiruvlarini amalga oshiraman. Sifatli 
+            8 yillik tajribaga ega professional elektrik. Uy va ofis elektr tarmog&apos;ini 
+            o&apos;rnatish, ta&apos;mirlash va xavfsizlik tekshiruvlarini amalga oshiraman. Sifatli 
             ish va mijoz mamnunligiga kafolat beraman.
           </p>
         </div>
 
         {/* Skills */}
         <div className="mb-6">
-          <h3 className="mb-3">Ko'nikmalar</h3>
+          <h3 className="mb-3">Ko&apos;nikmalar</h3>
           <div className="flex flex-wrap gap-2">
             {['Elektr tarmog\'i', 'LED yoritish', 'Avtomatika', 'Generatorlar', 'Solar panellar', 'Smart Home'].map((skill) => (
               <span key={skill} className="px-4 py-2 bg-[#252b3b] border border-gray-700 rounded-xl text-sm">
