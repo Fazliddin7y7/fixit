@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Animated, StyleSheet } from 'react-native';
 import { WelcomeScreen } from './../../components/WelcomeScreen';
 import { LoginScreen } from './../../components/LoginScreen';
 import { SignupScreen } from './../../components/SignupScreen';
@@ -11,15 +11,15 @@ import { UserDashboard } from './../../components/UserDashboard';
 import { UstaDashboard } from './../../components/UstaDashboard';
 import { CustomerProfileScreen } from './../../components/CustomerProfileScreen';
 
-type Screen = 
-  | 'welcome' 
-  | 'login' 
-  | 'signup' 
-  | 'home' 
-  | 'search' 
+type Screen =
+  | 'welcome'
+  | 'login'
+  | 'signup'
+  | 'home'
+  | 'search'
   | 'ustaProfile'
-  | 'chat' 
-  | 'userDashboard' 
+  | 'chat'
+  | 'userDashboard'
   | 'customerProfile'
   | 'ustaDashboard';
 
@@ -28,6 +28,26 @@ type UserRole = 'customer' | 'professional' | null;
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
   const [usrRole, setUserRole] = useState<UserRole>(null);
+
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateX = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    opacity.setValue(0);
+    translateX.setValue(20);
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateX, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [currentScreen]);
 
   const handleSignup = (role: UserRole) => {
     setUserRole(role);
@@ -39,7 +59,6 @@ export default function App() {
   };
 
   const handleLogin = () => {
-    // For demo, default to customer role
     setUserRole('customer');
     setCurrentScreen('home');
   };
@@ -47,80 +66,64 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'welcome':
-        return (
-          <WelcomeScreen 
-            onGetStarted={() => setCurrentScreen('signup')}
-          />
-        );
-      
+        return <WelcomeScreen onGetStarted={() => setCurrentScreen('signup')} />;
       case 'login':
         return (
-          <LoginScreen 
+          <LoginScreen
             onBack={() => setCurrentScreen('welcome')}
             onLogin={handleLogin}
             onSignup={() => setCurrentScreen('signup')}
           />
         );
-      
       case 'signup':
         return (
-          <SignupScreen 
+          <SignupScreen
             onBack={() => setCurrentScreen('login')}
             onSignup={handleSignup}
           />
         );
-      
       case 'home':
         return (
-          <HomeScreen 
-            onCategoryClick={(category) => setCurrentScreen('search')}
+          <HomeScreen
+            onCategoryClick={() => setCurrentScreen('search')}
             onSearchClick={() => setCurrentScreen('search')}
             onOrdersClick={() => setCurrentScreen('userDashboard')}
             onProfileClick={() => setCurrentScreen('customerProfile')}
             currentTab="home"
           />
         );
-      
       case 'search':
         return (
-          <SearchFilterScreen 
+          <SearchFilterScreen
             onBack={() => setCurrentScreen('home')}
-            onSelectUsta={(id) => setCurrentScreen('ustaProfile')}
+            onSelectUsta={() => setCurrentScreen('ustaProfile')}
             onHomeClick={() => setCurrentScreen('home')}
             onOrdersClick={() => setCurrentScreen('userDashboard')}
             onProfileClick={() => setCurrentScreen('customerProfile')}
           />
         );
-      
       case 'ustaProfile':
         return (
-          <UstaProfileScreen 
+          <UstaProfileScreen
             onBack={() => setCurrentScreen('search')}
             onBooking={() => setCurrentScreen('userDashboard')}
             onChat={() => setCurrentScreen('chat')}
           />
         );
-      
       case 'chat':
-        return (
-          <ChatScreen 
-            onBack={() => setCurrentScreen('ustaProfile')}
-          />
-        );
-      
+        return <ChatScreen onBack={() => setCurrentScreen('ustaProfile')} />;
       case 'userDashboard':
         return (
-          <UserDashboard 
+          <UserDashboard
             onBack={() => setCurrentScreen('home')}
             onHomeClick={() => setCurrentScreen('home')}
             onSearchClick={() => setCurrentScreen('search')}
             onProfileClick={() => setCurrentScreen('customerProfile')}
           />
         );
-      
       case 'customerProfile':
         return (
-          <CustomerProfileScreen 
+          <CustomerProfileScreen
             onBack={() => setCurrentScreen('home')}
             onHomeClick={() => setCurrentScreen('home')}
             onSearchClick={() => setCurrentScreen('search')}
@@ -131,34 +134,42 @@ export default function App() {
             }}
           />
         );
-      
       case 'ustaDashboard':
-        return (
-          <UstaDashboard 
-            onBack={() => setCurrentScreen('welcome')}
-          />
-        );
-      
+        return <UstaDashboard onBack={() => setCurrentScreen('welcome')} />;
       default:
         return <WelcomeScreen onGetStarted={() => setCurrentScreen('signup')} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1f2e] flex items-center justify-center">
-      <div className="w-full max-w-md mx-auto bg-[#1a1f2e] min-h-screen relative overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentScreen}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderScreen()}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </div>
+    <View style={styles.container}>
+      <View style={styles.innerContainer}>
+        <Animated.View
+          style={{
+            opacity,
+            transform: [{ translateX }],
+            flex: 1,
+          }}
+        >
+          {renderScreen()}
+        </Animated.View>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  innerContainer: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: '#1a1f2e',
+    overflow: 'hidden',
+  },
+});
