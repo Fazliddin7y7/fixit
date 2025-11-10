@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Mail, Lock } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { ArrowLeft, Mail, Lock } from 'lucide-react-native';
 
 interface LoginScreenProps {
   onBack: () => void;
@@ -12,69 +12,149 @@ export function LoginScreen({ onBack, onLogin, onSignup }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white">
-      <div className="p-6">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={onBack}
-          className="mb-8"
-        >
-          <ArrowLeft className="w-6 h-6 text-gray-400" />
-        </motion.button>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={onBack} style={styles.backButton}>
+        <ArrowLeft size={24} color="#9CA3AF" />
+      </TouchableOpacity>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="mb-2">Kirish</h1>
-          <p className="text-gray-400 mb-8">Akkauntingizga kiring</p>
+      <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+        <Text style={styles.title}>Kirish</Text>
+        <Text style={styles.subtitle}>Akkauntingizga kiring</Text>
 
-          <div className="space-y-4 mb-6">
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-              <input
-                type="email"
-                placeholder="Email manzilingiz"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-              />
-            </div>
+        <View style={styles.inputContainer}>
+          <View style={styles.inputWrapper}>
+            <Mail size={20} color="#6B7280" style={styles.icon} />
+            <TextInput
+              placeholder="Email manzilingiz"
+              placeholderTextColor="#9CA3AF"
+              value={email}
+              onChangeText={setEmail}
+              style={styles.input}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-              <input
-                type="password"
-                placeholder="Parol"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
-              />
-            </div>
-          </div>
+          <View style={styles.inputWrapper}>
+            <Lock size={20} color="#6B7280" style={styles.icon} />
+            <TextInput
+              placeholder="Parol"
+              placeholderTextColor="#9CA3AF"
+              value={password}
+              onChangeText={setPassword}
+              style={styles.input}
+              secureTextEntry
+            />
+          </View>
+        </View>
 
-          <div className="flex justify-end mb-6">
-            <button className="text-blue-500 text-sm">Parolni unutdingizmi?</button>
-          </div>
+        <TouchableOpacity style={styles.forgotButton}>
+          <Text style={styles.forgotText}>Parolni unutdingizmi?</Text>
+        </TouchableOpacity>
 
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={onLogin}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-2xl shadow-lg mb-6 flex items-center justify-center"
-          >
-            Kirish
-          </motion.button>
+        <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+          <Text style={styles.loginButtonText}>Kirish</Text>
+        </TouchableOpacity>
 
-          <div className="text-center">
-            <span className="text-gray-400">Akkauntingiz yo&apos;qmi? </span>
-            <button onClick={onSignup} className="text-blue-500">
-              Ro&apos;yxatdan o&apos;tish
-            </button>
-          </div>
-        </motion.div>
-      </div>
-    </div>
+        <View style={styles.signupContainer}>
+          <Text style={styles.signupText}>Akkauntingiz yo&apos;qmi? </Text>
+          <TouchableOpacity onPress={onSignup}>
+            <Text style={styles.signupButton}>Ro&apos;yxatdan o&apos;tish</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+    padding: 24,
+  },
+  backButton: {
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  subtitle: {
+    color: '#9CA3AF',
+    marginBottom: 32,
+  },
+  inputContainer: {
+    marginBottom: 24,
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  icon: {
+    marginRight: 12,
+  },
+  input: {
+    flex: 1,
+    color: '#fff',
+    height: 48,
+  },
+  forgotButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotText: {
+    color: '#3B82F6',
+    fontSize: 14,
+  },
+  loginButton: {
+    backgroundColor: '#3B82F6',
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signupText: {
+    color: '#9CA3AF',
+  },
+  signupButton: {
+    color: '#3B82F6',
+    marginLeft: 4,
+  },
+});

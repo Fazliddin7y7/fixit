@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, User, Mail, Phone, MapPin, Settings, LogOut, Bell, Shield, HelpCircle, ChevronRight, Home, Search, Wrench } from 'lucide-react';
+import React from 'react';
+import { View, Text, Pressable, StyleSheet, Animated, ScrollView } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { ArrowLeft, User, Mail, Phone, MapPin, Settings, LogOut, Bell, Shield, HelpCircle, ChevronRight, Home, Search, Wrench } from 'lucide-react-native';
 
 interface CustomerProfileScreenProps {
   onBack: () => void;
@@ -10,214 +12,378 @@ interface CustomerProfileScreenProps {
 }
 
 export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOrdersClick, onLogout }: CustomerProfileScreenProps) {
+  const animatedOpacity = React.useRef(new Animated.Value(0)).current;
+  const animatedTranslateY = React.useRef(new Animated.Value(20)).current;
+
+  React.useEffect(() => {
+    Animated.timing(animatedOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    Animated.timing(animatedTranslateY, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [animatedOpacity, animatedTranslateY]);
+
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white pb-20">
-      {/* Header */}
-      <div className="p-6">
-        <div className="flex items-center gap-4 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onBack}
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-400" />
-          </motion.button>
-          <h2>Profilim</h2>
-        </div>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            <Pressable onPress={onBack} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
+              <ArrowLeft color="#9ca3af" size={24} />
+            </Pressable>
+            <Text style={styles.headerTitle}>Profilim</Text>
+          </View>
 
-        {/* Profile Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-[#252b3b] border border-gray-700 rounded-2xl p-6 mb-6"
-        >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center text-2xl">
-              AF
-            </div>
-            <div className="flex-1">
-              <h3>Aziz foydalanuvchi</h3>
-              <p className="text-gray-400 text-sm">Mijoz</p>
-            </div>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-xl flex items-center justify-center"
-            >
-              <Settings className="w-5 h-5 text-gray-400" />
-            </motion.button>
-          </div>
+          {/* Profile Info */}
+          <Animated.View
+            style={[
+              styles.profileInfo,
+              {
+                opacity: animatedOpacity,
+                transform: [{ translateY: animatedTranslateY }],
+              },
+            ]}
+          >
+            <View style={styles.profileHeader}>
+              <LinearGradient colors={['#3B82F6', '#F97316']} style={styles.avatar}>
+                <Text style={styles.avatarText}>AF</Text>
+              </LinearGradient>
+              <View style={styles.profileTextContainer}>
+                <Text style={styles.profileName}>Aziz foydalanuvchi</Text>
+                <Text style={styles.profileRole}>Mijoz</Text>
+              </View>
+              <Pressable style={({ pressed }) => [styles.settingsButton, pressed && styles.pressed]}>
+                <Settings color="#9ca3af" size={20} />
+              </Pressable>
+            </View>
 
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-gray-400" />
-              <span className="text-gray-300">aziz@example.com</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Phone className="w-5 h-5 text-gray-400" />
-              <span className="text-gray-300">+998 90 123 45 67</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-gray-400" />
-              <span className="text-gray-300">Toshkent, Yunusobod tumani</span>
-            </div>
-          </div>
-        </motion.div>
+            <View style={styles.contactInfo}>
+              <View style={styles.contactRow}>
+                <Mail color="#9ca3af" size={20} />
+                <Text style={styles.contactText}>aziz@example.com</Text>
+              </View>
+              <View style={styles.contactRow}>
+                <Phone color="#9ca3af" size={20} />
+                <Text style={styles.contactText}>+998 90 123 45 67</Text>
+              </View>
+              <View style={styles.contactRow}>
+                <MapPin color="#9ca3af" size={20} />
+                <Text style={styles.contactText}>Toshkent, Yunusobod tumani</Text>
+              </View>
+            </View>
+          </Animated.View>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
-            className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center"
-          >
-            <p className="text-2xl mb-1">12</p>
-            <p className="text-gray-400 text-sm">Buyurtmalar</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center"
-          >
-            <p className="text-2xl mb-1">8</p>
-            <p className="text-gray-400 text-sm">Bajarildi</p>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center"
-          >
-            <p className="text-2xl mb-1">5</p>
-            <p className="text-gray-400 text-sm">Sevimlilar</p>
-          </motion.div>
-        </div>
+          {/* Stats */}
+          <View style={styles.statsContainer}>
+            <Animated.View style={[styles.statBox, { opacity: animatedOpacity, transform: [{ scale: 1 }] }]}>
+              <Text style={styles.statNumber}>12</Text>
+              <Text style={styles.statLabel}>Buyurtmalar</Text>
+            </Animated.View>
+            <Animated.View style={[styles.statBox, { opacity: animatedOpacity, transform: [{ scale: 1 }] }]}>
+              <Text style={styles.statNumber}>8</Text>
+              <Text style={styles.statLabel}>Bajarildi</Text>
+            </Animated.View>
+            <Animated.View style={[styles.statBox, { opacity: animatedOpacity, transform: [{ scale: 1 }] }]}>
+              <Text style={styles.statNumber}>5</Text>
+              <Text style={styles.statLabel}>Sevimlilar</Text>
+            </Animated.View>
+          </View>
 
-        {/* Menu Items */}
-        <div className="space-y-3">
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <User className="w-5 h-5 text-blue-500" />
-              </div>
-              <div className="text-left">
-                <p>Shaxsiy ma&apos;lumotlar</p>
-                <p className="text-gray-400 text-sm">Ma&apos;lumotlarni tahrirlash</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </motion.button>
+          {/* Menu Items */}
+          <View style={styles.menuContainer}>
+            <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(59, 130, 246, 0.2)' }]}>
+                  <User color="#3b82f6" size={20} />
+                </View>
+                <View style={styles.menuTextContainer}>
+                  <Text style={styles.menuTitle}>Shaxsiy ma&apos;lumotlar</Text>
+                  <Text style={styles.menuSubtitle}>Ma&apos;lumotlarni tahrirlash</Text>
+                </View>
+              </View>
+              <ChevronRight color="#9ca3af" size={20} />
+            </Pressable>
 
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
-                <Bell className="w-5 h-5 text-orange-500" />
-              </div>
-              <div className="text-left">
-                <p>Bildirishnomalar</p>
-                <p className="text-gray-400 text-sm">Xabarnomalarni boshqarish</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </motion.button>
+            <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(249, 115, 22, 0.2)' }]}>
+                  <Bell color="#f97316" size={20} />
+                </View>
+                <View style={styles.menuTextContainer}>
+                  <Text style={styles.menuTitle}>Bildirishnomalar</Text>
+                  <Text style={styles.menuSubtitle}>Xabarnomalarni boshqarish</Text>
+                </View>
+              </View>
+              <ChevronRight color="#9ca3af" size={20} />
+            </Pressable>
 
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <Shield className="w-5 h-5 text-purple-500" />
-              </div>
-              <div className="text-left">
-                <p>Xavfsizlik</p>
-                <p className="text-gray-400 text-sm">Parol va xavfsizlik</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </motion.button>
+            <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(139, 92, 246, 0.2)' }]}>
+                  <Shield color="#8b5cf6" size={20} />
+                </View>
+                <View style={styles.menuTextContainer}>
+                  <Text style={styles.menuTitle}>Xavfsizlik</Text>
+                  <Text style={styles.menuSubtitle}>Parol va xavfsizlik</Text>
+                </View>
+              </View>
+              <ChevronRight color="#9ca3af" size={20} />
+            </Pressable>
 
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center">
-                <HelpCircle className="w-5 h-5 text-green-500" />
-              </div>
-              <div className="text-left">
-                <p>Yordam</p>
-                <p className="text-gray-400 text-sm">FAQ va qo&apos;llab-quvvatlash</p>
-              </div>
-            </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
-          </motion.button>
+            <Pressable style={({ pressed }) => [styles.menuItem, pressed && styles.pressed]}>
+              <View style={styles.menuItemContent}>
+                <View style={[styles.menuIconContainer, { backgroundColor: 'rgba(34, 197, 94, 0.2)' }]}>
+                  <HelpCircle color="#22c55e" size={20} />
+                </View>
+                <View style={styles.menuTextContainer}>
+                  <Text style={styles.menuTitle}>Yordam</Text>
+                  <Text style={styles.menuSubtitle}>FAQ va qo&apos;llab-quvvatlash</Text>
+                </View>
+              </View>
+              <ChevronRight color="#9ca3af" size={20} />
+            </Pressable>
 
-          <motion.button
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onLogout}
-            className="w-full bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex items-center justify-center gap-3 text-red-500 mt-6"
-          >
-            <LogOut className="w-5 h-5" />
-            <span>Chiqish</span>
-          </motion.button>
-        </div>
-      </div>
+            <Pressable onPress={onLogout} style={({ pressed }) => [styles.logoutButton, pressed && styles.pressed]}>
+              <LogOut color="#ef4444" size={20} />
+              <Text style={styles.logoutText}>Chiqish</Text>
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#252b3b] border-t border-gray-700">
-        <div className="max-w-md mx-auto flex items-center justify-around py-3">
-          <button 
-            onClick={onHomeClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Home className="w-6 h-6" />
-            <span className="text-xs">Bosh sahifa</span>
-          </button>
-          <button 
-            onClick={onSearchClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Search className="w-6 h-6" />
-            <span className="text-xs">Qidiruv</span>
-          </button>
-          <button 
-            onClick={onOrdersClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Wrench className="w-6 h-6" />
-            <span className="text-xs">Buyurtmalar</span>
-          </button>
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center justify-center gap-1 text-blue-500"
-          >
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-orange-500"></div>
-            <span className="text-xs">Profil</span>
-          </button>
-        </div>
-      </div>
-    </div>
+      <View style={styles.bottomNav}>
+        <Pressable onPress={onHomeClick} style={({ pressed }) => [styles.bottomNavItem, pressed && styles.pressed]}>
+          <Home color="#6b7280" size={24} />
+          <Text style={styles.bottomNavText}>Bosh sahifa</Text>
+        </Pressable>
+        <Pressable onPress={onSearchClick} style={({ pressed }) => [styles.bottomNavItem, pressed && styles.pressed]}>
+          <Search color="#6b7280" size={24} />
+          <Text style={styles.bottomNavText}>Qidiruv</Text>
+        </Pressable>
+        <Pressable onPress={onOrdersClick} style={({ pressed }) => [styles.bottomNavItem, pressed && styles.pressed]}>
+          <Wrench color="#6b7280" size={24} />
+          <Text style={styles.bottomNavText}>Buyurtmalar</Text>
+        </Pressable>
+        <Pressable style={styles.bottomNavItem}>
+  <View style={styles.bottomNavActiveCircle} />
+  <Text style={[styles.bottomNavText, styles.bottomNavActiveText]}>Profil</Text>
+</Pressable>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+  },
+  scrollContent: {
+    paddingBottom: 100,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+  },
+  header: {
+    marginBottom: 24,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 24,
+  },
+  iconButton: {
+    padding: 8,
+    borderRadius: 6,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  headerTitle: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: '600',
+  },
+  profileInfo: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 24,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 24,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
+  profileTextContainer: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 18,
+    color: 'white',
+    fontWeight: '600',
+  },
+  profileRole: {
+    color: '#9ca3af',
+    fontSize: 14,
+  },
+  settingsButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#1a1f2e',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contactInfo: {
+    gap: 12,
+  },
+  contactRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  contactText: {
+    color: '#d1d5db',
+    fontSize: 14,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingVertical: 16,
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 24,
+    color: 'white',
+    marginBottom: 4,
+    fontWeight: '600',
+  },
+  statLabel: {
+    color: '#9ca3af',
+    fontSize: 14,
+  },
+  menuContainer: {
+    gap: 12,
+  },
+  menuItem: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  menuItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  menuIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuTextContainer: {
+    flexShrink: 1,
+  },
+  menuTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  menuSubtitle: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+  logoutButton: {
+    marginTop: 24,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderWidth: 1,
+    borderRadius: 24,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logoutText: {
+    color: '#ef4444',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#252b3b',
+    borderTopColor: '#374151',
+    borderTopWidth: 1,
+    paddingVertical: 12,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  bottomNavItem: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  bottomNavText: {
+    fontSize: 10,
+    color: '#6b7280',
+  },
+  bottomNavActive: {
+    color: '#3b82f6',
+  },
+  bottomNavActiveText: {
+    color: '#3b82f6',
+  },
+  bottomNavActiveCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#3b82f6',
+    marginBottom: 4,
+  },
+});

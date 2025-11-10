@@ -1,6 +1,8 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle, XCircle, MapPin, Calendar, Home, Search, Wrench } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MotiView } from 'moti';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface UserDashboardProps {
   onBack: () => void;
@@ -60,16 +62,16 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
     },
   ];
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyle = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'text-green-500 bg-green-500/10 border-green-500/20';
+        return styles.statusConfirmed;
       case 'pending':
-        return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+        return styles.statusPending;
       case 'completed':
-        return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
+        return styles.statusCompleted;
       default:
-        return 'text-gray-500 bg-gray-500/10 border-gray-500/20';
+        return styles.statusDefault;
     }
   };
 
@@ -87,204 +89,446 @@ export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileCli
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white">
+    <View style={styles.container}>
       {/* Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-center gap-4 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onBack}
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-400" />
-          </motion.button>
-          <h2>Buyurtmalarim</h2>
-        </div>
-
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <TouchableOpacity onPress={onBack} style={styles.iconButton}>
+            <MaterialCommunityIcons name="arrow-left" size={24} color="#9ca3af" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Buyurtmalarim</Text>
+        </View>
         {/* Tabs */}
-        <div className="flex gap-3 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('active')}
-            className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center ${
-              activeTab === 'active'
-                ? 'bg-blue-500 text-white'
-                : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-            }`}
+        <View style={styles.tabsRow}>
+          <TouchableOpacity
+            onPress={() => setActiveTab('active')}
+            style={[
+              styles.tabButton,
+              activeTab === 'active' ? styles.tabActive : styles.tabInactive,
+            ]}
           >
-            Faol buyurtmalar
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('history')}
-            className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center ${
-              activeTab === 'history'
-                ? 'bg-blue-500 text-white'
-                : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-            }`}
+            <Text style={[styles.tabText, activeTab === 'active' ? styles.tabTextActive : styles.tabTextInactive]}>
+              Faol buyurtmalar
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setActiveTab('history')}
+            style={[
+              styles.tabButton,
+              activeTab === 'history' ? styles.tabActive : styles.tabInactive,
+            ]}
           >
-            Tarix
-          </motion.button>
-        </div>
-      </div>
-
+            <Text style={[styles.tabText, activeTab === 'history' ? styles.tabTextActive : styles.tabTextInactive]}>
+              Tarix
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       {/* Content */}
-      <div className="px-6 space-y-4">
+      <ScrollView style={styles.content} contentContainerStyle={{paddingBottom: 100}}>
         {activeTab === 'active' ? (
           activeBookings.length > 0 ? (
             activeBookings.map((booking, index) => (
-              <motion.div
+              <MotiView
                 key={booking.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4"
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ delay: index * 100 }}
+                style={styles.bookingCard}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl flex items-center justify-center">
-                      <span>{booking.usta.split(' ').map(n => n[0]).join('')}</span>
-                    </div>
-                    <div>
-                      <h4>{booking.usta}</h4>
-                      <p className="text-gray-400 text-sm">{booking.skill}</p>
-                    </div>
-                  </div>
-                  <span className={`px-3 py-1 rounded-lg text-xs border ${getStatusColor(booking.status)}`}>
-                    {getStatusText(booking.status)}
-                  </span>
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    <span>{booking.date} • {booking.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    <span>{booking.location}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-                  <div>
-                    <p className="text-gray-400 text-sm">Jami narx</p>
-                    <p className="text-orange-500">{booking.price} so&apos;m</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 bg-[#1a1f2e] border border-gray-700 rounded-xl text-sm flex items-center justify-center"
+                <View style={styles.bookingHeader}>
+                  <View style={styles.bookingHeaderLeft}>
+                    <LinearGradient
+                      colors={['#3b82f6', '#f59e42']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.avatarCircle}
                     >
-                      Bekor qilish
-                    </motion.button>
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 bg-blue-500 rounded-xl text-sm flex items-center justify-center"
-                    >
-                      Xabar yuborish
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
+                      <Text style={styles.avatarText}>
+                        {booking.usta.split(' ').map(n => n[0]).join('')}
+                      </Text>
+                    </LinearGradient>
+                    <View>
+                      <Text style={styles.ustaName}>{booking.usta}</Text>
+                      <Text style={styles.ustaSkill}>{booking.skill}</Text>
+                    </View>
+                  </View>
+                  <View style={[styles.statusBadge, getStatusStyle(booking.status)]}>
+                    <Text style={styles.statusText}>{getStatusText(booking.status)}</Text>
+                  </View>
+                </View>
+                <View style={styles.bookingInfoBlock}>
+                  <View style={styles.bookingInfoRow}>
+                    <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingInfoText}>{booking.date} • {booking.time}</Text>
+                  </View>
+                  <View style={styles.bookingInfoRow}>
+                    <MaterialCommunityIcons name="map-marker" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingInfoText}>{booking.location}</Text>
+                  </View>
+                </View>
+                <View style={styles.bookingFooter}>
+                  <View>
+                    <Text style={styles.footerLabel}>Jami narx</Text>
+                    <Text style={styles.footerPrice}>{booking.price} so&apos;m</Text>
+                  </View>
+                  <View style={styles.bookingFooterButtons}>
+                    <TouchableOpacity style={styles.cancelButton}>
+                      <Text style={styles.cancelButtonText}>Bekor qilish</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.messageButton}>
+                      <Text style={styles.messageButtonText}>Xabar yuborish</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </MotiView>
             ))
           ) : (
-            <div className="text-center py-12">
-              <Clock className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">Faol buyurtmalar yo&apos;q</p>
-            </div>
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="clock-outline" size={64} color="#4b5563" style={{marginBottom: 16}} />
+              <Text style={styles.emptyText}>Faol buyurtmalar yo&apos;q</Text>
+            </View>
           )
         ) : (
           historyBookings.length > 0 ? (
             historyBookings.map((booking, index) => (
-              <motion.div
+              <MotiView
                 key={booking.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4"
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ delay: index * 100 }}
+                style={styles.bookingCard}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl flex items-center justify-center">
-                      <span>{booking.usta.split(' ').map(n => n[0]).join('')}</span>
-                    </div>
-                    <div>
-                      <h4>{booking.usta}</h4>
-                      <p className="text-gray-400 text-sm">{booking.skill}</p>
-                    </div>
-                  </div>
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    <span>{booking.date} • {booking.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <MapPin className="w-4 h-4" />
-                    <span>{booking.location}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-                  <div>
-                    <p className="text-gray-400 text-sm">To&apos;langan</p>
-                    <p className="text-orange-500">{booking.price} so&apos;m</p>
-                  </div>
-                  {!booking.rated && (
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      className="px-4 py-2 bg-yellow-500 rounded-xl text-sm text-black flex items-center justify-center"
+                <View style={styles.bookingHeader}>
+                  <View style={styles.bookingHeaderLeft}>
+                    <LinearGradient
+                      colors={['#3b82f6', '#f59e42']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.avatarCircle}
                     >
-                      Baho berish
-                    </motion.button>
+                      <Text style={styles.avatarText}>
+                        {booking.usta.split(' ').map(n => n[0]).join('')}
+                      </Text>
+                    </LinearGradient>
+                    <View>
+                      <Text style={styles.ustaName}>{booking.usta}</Text>
+                      <Text style={styles.ustaSkill}>{booking.skill}</Text>
+                    </View>
+                  </View>
+                  <MaterialCommunityIcons name="check-circle" size={24} color="#22c55e" />
+                </View>
+                <View style={styles.bookingInfoBlock}>
+                  <View style={styles.bookingInfoRow}>
+                    <MaterialCommunityIcons name="calendar" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingInfoText}>{booking.date} • {booking.time}</Text>
+                  </View>
+                  <View style={styles.bookingInfoRow}>
+                    <MaterialCommunityIcons name="map-marker" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingInfoText}>{booking.location}</Text>
+                  </View>
+                </View>
+                <View style={styles.bookingFooter}>
+                  <View>
+                    <Text style={styles.footerLabel}>To&apos;langan</Text>
+                    <Text style={styles.footerPrice}>{booking.price} so&apos;m</Text>
+                  </View>
+                  {!(booking?.rated ?? false) && (
+                    <TouchableOpacity style={styles.rateButton}>
+                      <Text style={styles.rateButtonText}>Baho berish</Text>
+                    </TouchableOpacity>
                   )}
-                </div>
-              </motion.div>
+                </View>
+              </MotiView>
             ))
           ) : (
-            <div className="text-center py-12">
-              <CheckCircle className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">Tarix bo&apos;sh</p>
-            </div>
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="check-circle-outline" size={64} color="#4b5563" style={{marginBottom: 16}} />
+              <Text style={styles.emptyText}>Tarix bo&apos;sh</Text>
+            </View>
           )
         )}
-      </div>
-
+      </ScrollView>
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#252b3b] border-t border-gray-700">
-        <div className="max-w-md mx-auto flex items-center justify-around py-3">
-          <button 
-            onClick={onHomeClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Home className="w-6 h-6" />
-            <span className="text-xs">Bosh sahifa</span>
-          </button>
-          <button 
-            onClick={onSearchClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Search className="w-6 h-6" />
-            <span className="text-xs">Qidiruv</span>
-          </button>
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center justify-center gap-1 text-blue-500"
-          >
-            <Wrench className="w-6 h-6" />
-            <span className="text-xs">Buyurtmalar</span>
-          </button>
-          <button 
-            onClick={onProfileClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <div className="w-6 h-6 rounded-full bg-gray-500"></div>
-            <span className="text-xs">Profil</span>
-          </button>
-        </div>
-      </div>
-    </div>
+      <View style={styles.bottomNav}>
+        <View style={styles.bottomNavRow}>
+          <TouchableOpacity onPress={onHomeClick} style={styles.bottomNavBtn}>
+            <MaterialCommunityIcons name="home-outline" size={28} color="#6b7280" />
+            <Text style={styles.bottomNavLabel}>Bosh sahifa</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onSearchClick} style={styles.bottomNavBtn}>
+            <MaterialCommunityIcons name="magnify" size={28} color="#6b7280" />
+            <Text style={styles.bottomNavLabel}>Qidiruv</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}} style={styles.bottomNavBtn}>
+            <MaterialCommunityIcons name="wrench" size={28} color="#3b82f6" />
+            <Text style={[styles.bottomNavLabel, {color: '#3b82f6'}]}>Buyurtmalar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onProfileClick} style={styles.bottomNavBtn}>
+            <View style={styles.profileCircle} />
+            <Text style={styles.bottomNavLabel}>Profil</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
+
+const windowWidth = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 8,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginBottom: 24,
+  },
+  iconButton: {
+    padding: 4,
+    borderRadius: 12,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: 'white',
+  },
+  tabsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabActive: {
+    backgroundColor: '#3b82f6',
+  },
+  tabInactive: {
+    backgroundColor: '#252b3b',
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  tabText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  tabTextActive: {
+    color: 'white',
+  },
+  tabTextInactive: {
+    color: '#9ca3af',
+  },
+  content: {
+    paddingHorizontal: 24,
+    flex: 1,
+  },
+  bookingCard: {
+    backgroundColor: '#252b3b',
+    borderWidth: 1,
+    borderColor: '#374151',
+    borderRadius: 20,
+    padding: 16,
+    marginBottom: 16,
+  },
+  bookingHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  bookingHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  avatarCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 18,
+  },
+  ustaName: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  ustaSkill: {
+    color: '#9ca3af',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 10,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 72,
+  },
+  statusConfirmed: {
+    borderColor: '#22c55e',
+    backgroundColor: 'rgba(34,197,94,0.10)',
+  },
+  statusPending: {
+    borderColor: '#eab308',
+    backgroundColor: 'rgba(234,179,8,0.10)',
+  },
+  statusCompleted: {
+    borderColor: '#3b82f6',
+    backgroundColor: 'rgba(59,130,246,0.10)',
+  },
+  statusDefault: {
+    borderColor: '#6b7280',
+    backgroundColor: 'rgba(107,114,128,0.10)',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'white',
+  },
+  bookingInfoBlock: {
+    marginBottom: 16,
+    gap: 6,
+  },
+  bookingInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 2,
+  },
+  bookingInfoText: {
+    color: '#9ca3af',
+    fontSize: 13,
+  },
+  bookingFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    borderColor: '#374151',
+    paddingTop: 14,
+  },
+  footerLabel: {
+    color: '#9ca3af',
+    fontSize: 13,
+  },
+  footerPrice: {
+    color: '#f59e42',
+    fontWeight: '700',
+    fontSize: 15,
+    marginTop: 2,
+  },
+  bookingFooterButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  cancelButton: {
+    backgroundColor: '#1a1f2e',
+    borderWidth: 1,
+    borderColor: '#374151',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  messageButton: {
+    backgroundColor: '#3b82f6',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  messageButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  rateButton: {
+    backgroundColor: '#fde047',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rateButtonText: {
+    color: '#18181b',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 48,
+    justifyContent: 'center',
+  },
+  emptyText: {
+    color: '#9ca3af',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  bottomNav: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#252b3b',
+    borderTopWidth: 1,
+    borderColor: '#374151',
+    paddingVertical: 8,
+    width: windowWidth,
+  },
+  bottomNavRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    maxWidth: 500,
+    alignSelf: 'center',
+  },
+  bottomNavBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 2,
+    flex: 1,
+  },
+  bottomNavLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+    fontWeight: '500',
+    marginTop: 2,
+  },
+  profileCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#6b7280',
+    marginBottom: 2,
+  },
+});

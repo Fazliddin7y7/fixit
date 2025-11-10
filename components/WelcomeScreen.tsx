@@ -1,5 +1,8 @@
-import { motion } from 'framer-motion';
-import { Wrench } from 'lucide-react';
+import React from 'react';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import { MotiView } from 'moti';
+import { Wrench } from 'lucide-react-native';
 
 interface WelcomeScreenProps {
   onGetStarted: () => void;
@@ -7,75 +10,172 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1a1f2e] to-[#0f1419] flex flex-col items-center justify-center p-6">
-      <motion.div
-        initial={{ scale: 0.5, opacity: 0 }}
+    <View style={styles.container}>
+      <MotiView
+        from={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="mb-8"
+        transition={{ type: 'timing', duration: 600, easing: Easing.out(Easing.ease) }}
+        style={styles.iconWrapper}
       >
-        <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-orange-500 rounded-3xl flex items-center justify-center shadow-2xl">
-          <Wrench className="w-12 h-12 text-white" />
-        </div>
-      </motion.div>
-
-      <motion.h1
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        className="text-white mb-4 text-center"
-      >
-        FixIt
-      </motion.h1>
-
-      <motion.p
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
-        className="text-gray-400 text-center mb-12 max-w-sm"
-      >
-        Ishonchli ustalarni yaqin atrofingizdan toping
-      </motion.p>
-
-      <motion.div
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.6, duration: 0.6 }}
-        className="w-full max-w-sm space-y-4"
-      >
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={onGetStarted}
-          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-2xl shadow-lg flex items-center justify-center"
+        <LinearGradient
+          colors={['#3b82f6', '#f97316']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.iconBackground}
         >
-          Boshlash
-        </motion.button>
+          <Wrench color="white" width={48} height={48} />
+        </LinearGradient>
+      </MotiView>
 
-        <div className="flex items-center gap-4 px-4">
-          <div className="flex-1 h-px bg-gray-700"></div>
-          <span className="text-gray-500 text-sm">yoki</span>
-          <div className="flex-1 h-px bg-gray-700"></div>
-        </div>
+      <MotiView
+        from={{ translateY: 20, opacity: 0 }}
+        animate={{ translateY: 0, opacity: 1 }}
+        transition={{ delay: 200, type: 'timing', duration: 600 }}
+      >
+        <Text style={styles.title}>FixIt</Text>
+      </MotiView>
 
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={onGetStarted}
-          className="w-full border border-gray-700 text-gray-300 py-4 rounded-2xl flex items-center justify-center"
-        >
-          Akkauntga kirish
-        </motion.button>
-      </motion.div>
+      <MotiView
+        from={{ translateY: 20, opacity: 0 }}
+        animate={{ translateY: 0, opacity: 1 }}
+        transition={{ delay: 400, type: 'timing', duration: 600 }}
+      >
+        <Text style={styles.subtitle}>Ishonchli ustalarni yaqin atrofingizdan toping</Text>
+      </MotiView>
 
-      <div className="mt-12 flex gap-2">
+      <MotiView
+        from={{ translateY: 20, opacity: 0 }}
+        animate={{ translateY: 0, opacity: 1 }}
+        transition={{ delay: 600, type: 'timing', duration: 600 }}
+        style={styles.buttonsContainer}
+      >
+        <Pressable style={styles.primaryButton} onPress={onGetStarted}>
+          <Text style={styles.primaryButtonText}>Boshlash</Text>
+        </Pressable>
+
+        <View style={styles.separatorContainer}>
+          <View style={styles.separatorLine} />
+          <Text style={styles.separatorText}>yoki</Text>
+          <View style={styles.separatorLine} />
+        </View>
+
+        <Pressable style={styles.secondaryButton} onPress={onGetStarted}>
+          <Text style={styles.secondaryButtonText}>Akkauntga kirish</Text>
+        </Pressable>
+      </MotiView>
+
+      <View style={styles.pagination}>
         {[0, 1, 2].map((i) => (
-          <motion.div
+          <MotiView
             key={i}
-            initial={{ opacity: 0 }}
+            from={{ opacity: 0 }}
             animate={{ opacity: i === 0 ? 1 : 0.3 }}
-            className="w-2 h-2 rounded-full bg-blue-500"
+            style={styles.paginationDot}
           />
         ))}
-      </div>
-    </div>
+      </View>
+    </View>
   );
 }
+
+import { Easing } from 'react-native-reanimated';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#0f1419',
+    padding: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    marginBottom: 32,
+  },
+  iconBackground: {
+    width: 96,
+    height: 96,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 10,
+  },
+  title: {
+    color: 'white',
+    fontSize: 32,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  subtitle: {
+    color: '#9ca3af',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 48,
+    maxWidth: 280,
+  },
+  buttonsContainer: {
+    width: '100%',
+    maxWidth: 320,
+  },
+  primaryButton: {
+    backgroundColor: '#3b82f6',
+    paddingVertical: 16,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  primaryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  separatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#374151',
+  },
+  separatorText: {
+    color: '#6b7280',
+    fontSize: 14,
+    marginHorizontal: 12,
+  },
+  secondaryButton: {
+    borderWidth: 1,
+    borderColor: '#374151',
+    paddingVertical: 16,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    color: '#d1d5db',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  pagination: {
+    marginTop: 48,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  paginationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#3b82f6',
+    marginHorizontal: 4,
+  },
+});

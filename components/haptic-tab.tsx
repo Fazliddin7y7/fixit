@@ -1,7 +1,23 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Pressable } from 'react-native';
+import HapticFeedback from 'react-native-haptic-feedback';
 
-export const HapticTab = (props: any) => {
-  // Bu yerda haptic touch effektini qo'shish mumkin
-  return <TouchableOpacity {...props} />;
+type HapticTabProps = {
+  onPress?: () => void;
+  children: React.ReactNode;
+  style?: any;
+};
+
+export const HapticTab: React.FC<HapticTabProps> = ({ onPress, children, style }) => {
+  const handlePress = () => {
+    // Haptic touch effekti
+    HapticFeedback.trigger('impactLight');
+    if (onPress) onPress();
+  };
+
+  return (
+    <Pressable onPress={handlePress} style={style}>
+      {children}
+    </Pressable>
+  );
 };

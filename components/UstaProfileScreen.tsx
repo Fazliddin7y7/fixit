@@ -1,5 +1,8 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Star, MapPin, Clock, Award, MessageCircle } from 'lucide-react';
+import React from 'react';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { MotiView } from 'moti';
+import LinearGradient from 'react-native-linear-gradient';
+import { ArrowLeft, Star, MapPin, Clock, Award, MessageCircle } from 'react-native-feather';
 
 interface UstaProfileScreenProps {
   onBack: () => void;
@@ -8,146 +11,410 @@ interface UstaProfileScreenProps {
 }
 
 export function UstaProfileScreen({ onBack, onBooking, onChat }: UstaProfileScreenProps) {
-  return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white pb-24">
-      {/* Header with Image */}
-      <div className="relative h-64 bg-gradient-to-b from-blue-500 to-orange-500">
-        <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onBack}
-            className="w-10 h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center"
-          >
-            <Star className="w-5 h-5" />
-          </motion.button>
-        </div>
-        
-        <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-          <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-orange-500 rounded-3xl flex items-center justify-center text-3xl translate-y-1/2 border-4 border-[#1a1f2e]">
-            AK
-          </div>
-        </div>
-      </div>
+  const skills = ['Elektr tarmog\'i', 'LED yoritish', 'Avtomatika', 'Generatorlar', 'Solar panellar', 'Smart Home'];
+  const reviews = [
+    { name: "Dilshod M.", rating: 5, comment: "Juda professional usta! Ishini a'lo bajaradi.", date: "2 kun oldin" },
+    { name: "Kamola A.", rating: 5, comment: "Tez va sifatli xizmat. Tavsiya qilaman.", date: "1 hafta oldin" },
+  ];
 
-      {/* Profile Info */}
-      <div className="px-6 pt-20">
-        <div className="text-center mb-6">
-          <h2 className="mb-1">Ahmadjon Karimov</h2>
-          <p className="text-gray-400 mb-3">Elektrik mutaxassisi</p>
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="flex items-center gap-1">
-              <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-              <span>4.9</span>
-              <span className="text-gray-500">(127 baho)</span>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-gray-400">
-            <MapPin className="w-4 h-4" />
-            <span>Toshkent, Yunusobod tumani</span>
-          </div>
-        </div>
+  return (
+    <View style={styles.container}>
+      {/* Header with Image */}
+      <LinearGradient colors={['#3b82f6', '#f97316']} style={styles.header}>
+        <View style={styles.headerTop}>
+          <Pressable onPress={onBack} style={styles.iconButton}>
+            <MotiView
+              from={{ scale: 1 }}
+              animate={{ scale: 1 }}
+              style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
+            >
+              <ArrowLeft width={20} height={20} stroke="white" />
+            </MotiView>
+          </Pressable>
+          <Pressable onPress={() => {}} style={styles.iconButton}>
+            <MotiView
+              from={{ scale: 1 }}
+              animate={{ scale: 1 }}
+              style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
+            >
+              <Star width={20} height={20} stroke="white" />
+            </MotiView>
+          </Pressable>
+        </View>
+
+        <View style={styles.avatarWrapper}>
+          <LinearGradient colors={['#3b82f6', '#f97316']} style={styles.avatar}>
+            <Text style={styles.avatarText}>AK</Text>
+          </LinearGradient>
+        </View>
+      </LinearGradient>
+
+      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Profile Info */}
+        <View style={styles.profileInfo}>
+          <Text style={styles.name}>Ahmadjon Karimov</Text>
+          <Text style={styles.profession}>Elektrik mutaxassisi</Text>
+          <View style={styles.ratingRow}>
+            <View style={styles.rating}>
+              <Star width={16} height={16} stroke="#facc15" />
+              <Text style={styles.ratingValue}>4.9</Text>
+              <Text style={styles.ratingCount}>(127 baho)</Text>
+            </View>
+          </View>
+          <View style={styles.locationRow}>
+            <MapPin width={14} height={14} stroke="#9ca3af" />
+            <Text style={styles.locationText}>Toshkent, Yunusobod tumani</Text>
+          </View>
+        </View>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center">
-            <Clock className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-gray-400 text-sm">Tajriba</p>
-            <p>8 yil</p>
-          </div>
-          <div className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center">
-            <Award className="w-6 h-6 text-orange-500 mx-auto mb-2" />
-            <p className="text-gray-400 text-sm">Loyihalar</p>
-            <p>350+</p>
-          </div>
-          <div className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 text-center">
-            <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
-            <p className="text-gray-400 text-sm">Reyting</p>
-            <p>Top 5%</p>
-          </div>
-        </div>
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <Clock width={24} height={24} stroke="#3b82f6" />
+            <Text style={styles.statLabel}>Tajriba</Text>
+            <Text style={styles.statValue}>8 yil</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Award width={24} height={24} stroke="#f97316" />
+            <Text style={styles.statLabel}>Loyihalar</Text>
+            <Text style={styles.statValue}>350+</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Star width={24} height={24} stroke="#facc15" />
+            <Text style={styles.statLabel}>Reyting</Text>
+            <Text style={styles.statValue}>Top 5%</Text>
+          </View>
+        </View>
 
         {/* About */}
-        <div className="mb-6">
-          <h3 className="mb-3">Ma&apos;lumot</h3>
-          <p className="text-gray-400 leading-relaxed">
-            8 yillik tajribaga ega professional elektrik. Uy va ofis elektr tarmog&apos;ini 
-            o&apos;rnatish, ta&apos;mirlash va xavfsizlik tekshiruvlarini amalga oshiraman. Sifatli 
-            ish va mijoz mamnunligiga kafolat beraman.
-          </p>
-        </div>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Ma&apos;lumot</Text>
+          <Text style={styles.sectionText}>
+            8 yillik tajribaga ega professional elektrik. Uy va ofis elektr tarmog&apos;ini o&apos;rnatish, ta&apos;mirlash va xavfsizlik tekshiruvlarini amalga oshiraman. Sifatli ish va mijoz mamnunligiga kafolat beraman.
+          </Text>
+        </View>
 
         {/* Skills */}
-        <div className="mb-6">
-          <h3 className="mb-3">Ko&apos;nikmalar</h3>
-          <div className="flex flex-wrap gap-2">
-            {['Elektr tarmog\'i', 'LED yoritish', 'Avtomatika', 'Generatorlar', 'Solar panellar', 'Smart Home'].map((skill) => (
-              <span key={skill} className="px-4 py-2 bg-[#252b3b] border border-gray-700 rounded-xl text-sm">
-                {skill}
-              </span>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Ko&apos;nikmalar</Text>
+          <View style={styles.skillsRow}>
+            {skills.map((skill) => (
+              <View key={skill} style={styles.skillBox}>
+                <Text style={styles.skillText}>{skill}</Text>
+              </View>
             ))}
-          </div>
-        </div>
+          </View>
+        </View>
 
         {/* Reviews */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3>Fikrlar</h3>
-            <button className="text-blue-500 text-sm">Barchasi</button>
-          </div>
-          
-          <div className="space-y-3">
-            {[
-              { name: "Dilshod M.", rating: 5, comment: "Juda professional usta! Ishini a'lo bajaradi.", date: "2 kun oldin" },
-              { name: "Kamola A.", rating: 5, comment: "Tez va sifatli xizmat. Tavsiya qilaman.", date: "1 hafta oldin" },
-            ].map((review, index) => (
-              <div key={index} className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p>{review.name}</p>
-                  <span className="text-gray-500 text-sm">{review.date}</span>
-                </div>
-                <div className="flex items-center gap-1 mb-2">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  ))}
-                </div>
-                <p className="text-gray-400 text-sm">{review.comment}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        <View style={styles.section}>
+          <View style={styles.reviewsHeader}>
+            <Text style={styles.sectionTitle}>Fikrlar</Text>
+            <TouchableOpacity>
+              <Text style={styles.showAll}>Barchasi</Text>
+            </TouchableOpacity>
+          </View>
+          {reviews.map((review, index) => (
+            <View key={index} style={styles.reviewBox}>
+              <View style={styles.reviewHeader}>
+                <Text style={styles.reviewName}>{review.name}</Text>
+                <Text style={styles.reviewDate}>{review.date}</Text>
+              </View>
+              <View style={styles.reviewRating}>
+                {Array.from({ length: review.rating }).map((_, i) => (
+                  <Star key={i} width={16} height={16} stroke="#facc15" />
+                ))}
+              </View>
+              <Text style={styles.reviewComment}>{review.comment}</Text>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
 
       {/* Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#252b3b] border-t border-gray-700 p-6">
-        <div className="max-w-md mx-auto flex items-center gap-4">
-          <div className="text-center">
-            <p className="text-orange-500 text-2xl">80,000</p>
-            <p className="text-gray-400 text-sm">soat/sum</p>
-          </div>
-          <div className="flex-1 flex gap-3">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onChat}
-              className="w-14 h-14 bg-[#1a1f2e] border border-gray-700 rounded-2xl flex items-center justify-center"
+      <View style={styles.bottomBar}>
+        <View style={styles.priceBox}>
+          <Text style={styles.price}>80,000</Text>
+          <Text style={styles.priceUnit}>soat/sum</Text>
+        </View>
+        <View style={styles.actionsRow}>
+          <Pressable onPress={onChat} style={styles.chatButton}>
+            <MotiView
+              from={{ scale: 1 }}
+              animate={{ scale: 1 }}
+              style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}
             >
-              <MessageCircle className="w-6 h-6 text-blue-500" />
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onBooking}
-              className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-2xl flex items-center justify-center"
+              <MessageCircle width={24} height={24} stroke="#3b82f6" />
+            </MotiView>
+          </Pressable>
+          <Pressable onPress={onBooking} style={styles.bookingButton}>
+            <MotiView
+              from={{ scale: 1 }}
+              animate={{ scale: 1 }}
+              style={{ justifyContent: 'center', alignItems: 'center', flex: 1, width: '100%' }}
             >
-              Buyurtma berish
-            </motion.button>
-          </div>
-        </div>
-      </div>
-    </div>
+              <Text style={styles.bookingText}>Buyurtma berish</Text>
+            </MotiView>
+          </Pressable>
+        </View>
+      </View>
+    </View>
   );
 }
+
+const windowWidth = Dimensions.get('window').width;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+  },
+  header: {
+    height: 160,
+    justifyContent: 'flex-start',
+    paddingTop: 24,
+    paddingHorizontal: 16,
+    position: 'relative',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    zIndex: 10,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarWrapper: {
+    position: 'absolute',
+    bottom: -40,
+    left: (windowWidth - 128) / 2,
+    width: 128,
+    height: 128,
+    borderRadius: 24,
+    borderWidth: 4,
+    borderColor: '#1a1f2e',
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatar: {
+    flex: 1,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    color: 'white',
+    fontSize: 48,
+    fontWeight: '700',
+  },
+  content: {
+    paddingTop: 56,
+    paddingHorizontal: 24,
+    paddingBottom: 96,
+  },
+  profileInfo: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: 'white',
+    marginBottom: 4,
+  },
+  profession: {
+    fontSize: 14,
+    color: '#9ca3af',
+    marginBottom: 12,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  rating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 4,
+  },
+  ratingValue: {
+    color: 'white',
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  ratingCount: {
+    color: '#6b7280',
+    marginLeft: 4,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  locationText: {
+    color: '#9ca3af',
+    fontSize: 14,
+    marginLeft: 4,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statBox: {
+    backgroundColor: '#252b3b',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#374151',
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 4,
+  },
+  statLabel: {
+    color: '#9ca3af',
+    fontSize: 12,
+    marginTop: 6,
+    marginBottom: 2,
+  },
+  statValue: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 12,
+  },
+  sectionText: {
+    color: '#9ca3af',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  skillsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginRight: -8,
+  },
+  skillBox: {
+    backgroundColor: '#252b3b',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#374151',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  skillText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  reviewsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  showAll: {
+    color: '#3b82f6',
+    fontSize: 14,
+  },
+  reviewBox: {
+    backgroundColor: '#252b3b',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#374151',
+    padding: 16,
+    marginBottom: 12,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  reviewName: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  reviewDate: {
+    color: '#6b7280',
+    fontSize: 12,
+  },
+  reviewRating: {
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  reviewComment: {
+    color: '#9ca3af',
+    fontSize: 14,
+  },
+  bottomBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#252b3b',
+    borderTopWidth: 1,
+    borderTopColor: '#374151',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceBox: {
+    marginRight: 16,
+    alignItems: 'center',
+  },
+  price: {
+    color: '#f97316',
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  priceUnit: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+  actionsRow: {
+    flex: 1,
+    flexDirection: 'row',
+    marginLeft: -12,
+  },
+  chatButton: {
+    width: 56,
+    height: 56,
+    backgroundColor: '#1a1f2e',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#374151',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  bookingButton: {
+    flex: 1,
+    backgroundColor: '#3b82f6',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 14,
+  },
+  bookingText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+});

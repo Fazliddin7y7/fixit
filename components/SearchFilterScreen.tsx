@@ -1,7 +1,6 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Search, SlidersHorizontal, Star, MapPin, Home, Wrench } from 'lucide-react';
-import { useState } from 'react';
-
+import React, { useState } from 'react';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 interface SearchFilterScreenProps {
   onBack: () => void;
   onSelectUsta: (id: number) => void;
@@ -18,7 +17,13 @@ const professionals = [
   { id: 5, name: "Jasur Abdullayev", skill: "Konditsioner", rating: 4.6, reviews: 84, price: "90,000", distance: "4.2 km" },
 ];
 
-export function SearchFilterScreen({ onBack, onSelectUsta, onHomeClick, onOrdersClick, onProfileClick }: SearchFilterScreenProps) {
+export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
+  onBack,
+  onSelectUsta,
+  onHomeClick,
+  onOrdersClick,
+  onProfileClick,
+}) => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSkill, setSelectedSkill] = useState('Barchasi');
@@ -28,194 +33,201 @@ export function SearchFilterScreen({ onBack, onSelectUsta, onHomeClick, onOrders
   const skills = ['Barchasi', 'Elektrik', 'Santexnik', "Bo'yoqchi", 'Duradgor', 'Konditsioner'];
 
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white">
-      {/* Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-center gap-4 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onBack}
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-400" />
-          </motion.button>
-          <h2>Qidiruv va filtr</h2>
-        </div>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onBack} style={styles.backButton}>
+            <MaterialIcons name="arrow-back" size={24} color="#9ca3af" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Qidiruv va filtr</Text>
+        </View>
 
         {/* Search Bar */}
-        <div className="flex gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-            <input
-              type="text"
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputWrapper}>
+            <MaterialIcons name="search" size={20} color="#9ca3af" style={styles.searchIcon} />
+            <TextInput
               placeholder="Usta yoki xizmat qidiring..."
+              placeholderTextColor="#9ca3af"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#252b3b] border border-gray-700 rounded-2xl py-4 pl-12 pr-4 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+              onChangeText={setSearchQuery}
+              style={styles.searchInput}
             />
-          </div>
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowFilters(!showFilters)}
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-              showFilters ? 'bg-blue-500' : 'bg-[#252b3b] border border-gray-700'
-            }`}
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowFilters(!showFilters)}
+            style={[styles.filterButton, showFilters ? styles.filterButtonActive : null]}
           >
-            <SlidersHorizontal className="w-5 h-5" />
-          </motion.button>
-        </div>
-      </div>
+            <MaterialIcons name="tune" size={20} color={showFilters ? '#fff' : '#9ca3af'} />
+          </TouchableOpacity>
+        </View>
 
-      {/* Filters */}
-      {showFilters && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="px-6 pb-4 space-y-4"
-        >
-          {/* Skill Filter */}
-          <div>
-            <p className="text-gray-400 text-sm mb-2">Xizmat turi</p>
-            <div className="flex flex-wrap gap-2">
+        {/* Filters */}
+        {showFilters && (
+          <View style={styles.filtersContainer}>
+            <Text style={styles.filterLabel}>Xizmat turi</Text>
+            <View style={styles.skillsWrapper}>
               {skills.map((skill) => (
-                <motion.button
+                <TouchableOpacity
                   key={skill}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedSkill(skill)}
-                  className={`px-4 py-2 rounded-xl text-sm flex items-center justify-center ${
-                    selectedSkill === skill
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-                  }`}
+                  onPress={() => setSelectedSkill(skill)}
+                  style={[
+                    styles.skillButton,
+                    selectedSkill === skill ? styles.skillButtonActive : null,
+                  ]}
                 >
-                  {skill}
-                </motion.button>
+                  <Text
+                    style={[
+                      styles.skillText,
+                      selectedSkill === skill ? styles.skillTextActive : null,
+                    ]}
+                  >
+                    {skill}
+                  </Text>
+                </TouchableOpacity>
               ))}
-            </div>
-          </div>
+            </View>
 
-          {/* Rating Filter */}
-          <div>
-            <p className="text-gray-400 text-sm mb-2">Minimal reyting</p>
-            <div className="flex gap-2">
+            <Text style={styles.filterLabel}>Minimal reyting</Text>
+            <View style={styles.ratingWrapper}>
               {[3, 4, 4.5, 5].map((rating) => (
-                <motion.button
+                <TouchableOpacity
                   key={rating}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setMinRating(rating)}
-                  className={`flex-1 px-4 py-2 rounded-xl text-sm flex items-center justify-center gap-2 ${
-                    minRating === rating
-                      ? 'bg-yellow-500 text-white'
-                      : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-                  }`}
+                  onPress={() => setMinRating(rating)}
+                  style={[
+                    styles.ratingButton,
+                    minRating === rating ? styles.ratingButtonActive : null,
+                  ]}
                 >
-                  <Star className="w-4 h-4" />
-                  <span>{rating}+</span>
-                </motion.button>
+                  <MaterialCommunityIcons name="star" size={16} color={minRating === rating ? '#fff' : '#9ca3af'} />
+                  <Text style={minRating === rating ? styles.ratingTextActive : styles.ratingText}>{rating}+</Text>
+                </TouchableOpacity>
               ))}
-            </div>
-          </div>
+            </View>
 
-          {/* Price Range */}
-          <div>
-            <p className="text-gray-400 text-sm mb-2">Narx oralig&apos;i (soat/sum)</p>
-            <div className="flex gap-3">
-              <input
-                type="number"
+            <Text style={styles.filterLabel}>Narx oralig&apos;i (soat/sum)</Text>
+            <View style={styles.priceWrapper}>
+              <TextInput
                 placeholder="Min"
-                value={priceRange[0]}
-                onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
-                className="flex-1 bg-[#252b3b] border border-gray-700 rounded-xl py-2 px-4 text-white"
+                placeholderTextColor="#9ca3af"
+                keyboardType="numeric"
+                value={priceRange[0].toString()}
+                onChangeText={(val) => setPriceRange([+val, priceRange[1]])}
+                style={styles.priceInput}
               />
-              <input
-                type="number"
+              <TextInput
                 placeholder="Max"
-                value={priceRange[1]}
-                onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
-                className="flex-1 bg-[#252b3b] border border-gray-700 rounded-xl py-2 px-4 text-white"
+                placeholderTextColor="#9ca3af"
+                keyboardType="numeric"
+                value={priceRange[1].toString()}
+                onChangeText={(val) => setPriceRange([priceRange[0], +val])}
+                style={styles.priceInput}
               />
-            </div>
-          </div>
-        </motion.div>
-      )}
+            </View>
+          </View>
+        )}
 
-      {/* Results */}
-      <div className="px-6 py-4">
-        <p className="text-gray-400 text-sm mb-4">{professionals.length} ta usta topildi</p>
-        
-        <div className="space-y-3">
-          {professionals.map((usta, index) => (
-            <motion.div
-              key={usta.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => onSelectUsta(usta.id)}
-              className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4 cursor-pointer hover:border-blue-500 transition-colors"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <span className="text-xl">{usta.name.split(' ').map(n => n[0]).join('')}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="truncate">{usta.name}</h4>
-                  <p className="text-gray-400 text-sm">{usta.skill}</p>
-                  <div className="flex items-center gap-3 mt-2">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                      <span className="text-sm">{usta.rating}</span>
-                      <span className="text-gray-500 text-sm">({usta.reviews})</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-400">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{usta.distance}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-orange-500">{usta.price}</p>
-                  <p className="text-gray-500 text-xs">soat/sum</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+        {/* Results */}
+        <Text style={styles.resultsText}>{professionals.length} ta usta topildi</Text>
+        {professionals.map((usta) => (
+          <TouchableOpacity
+            key={usta.id}
+            onPress={() => onSelectUsta(usta.id)}
+            style={styles.ustaCard}
+          >
+            <View style={styles.ustaAvatar}>
+              <Text style={styles.ustaAvatarText}>{usta.name.split(' ').map(n => n[0]).join('')}</Text>
+            </View>
+            <View style={styles.ustaInfo}>
+              <Text style={styles.ustaName}>{usta.name}</Text>
+              <Text style={styles.ustaSkill}>{usta.skill}</Text>
+              <View style={styles.ustaStats}>
+                <View style={styles.ustaRating}>
+                  <MaterialCommunityIcons name="star" size={14} color="#facc15" />
+                  <Text style={styles.ustaRatingText}>{usta.rating}</Text>
+                  <Text style={styles.ustaReviews}>({usta.reviews})</Text>
+                </View>
+                <View style={styles.ustaDistance}>
+                  <MaterialCommunityIcons name="map-marker" size={14} color="#9ca3af" />
+                  <Text style={styles.ustaDistanceText}>{usta.distance}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.ustaPrice}>
+              <Text style={styles.ustaPriceText}>{usta.price}</Text>
+              <Text style={styles.ustaPriceUnit}>soat/sum</Text>
+            </View>
+          </TouchableOpacity>
+        ))}
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#252b3b] border-t border-gray-700 pb-20">
-        <div className="max-w-md mx-auto flex items-center justify-around py-3">
-          <button 
-            onClick={onHomeClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Home className="w-6 h-6" />
-            <span className="text-xs">Bosh sahifa</span>
-          </button>
-          <button 
-            onClick={() => {}}
-            className="flex flex-col items-center justify-center gap-1 text-blue-500"
-          >
-            <Search className="w-6 h-6" />
-            <span className="text-xs">Qidiruv</span>
-          </button>
-          <button 
-            onClick={onOrdersClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <Wrench className="w-6 h-6" />
-            <span className="text-xs">Buyurtmalar</span>
-          </button>
-          <button 
-            onClick={onProfileClick}
-            className="flex flex-col items-center justify-center gap-1 text-gray-500"
-          >
-            <div className="w-6 h-6 rounded-full bg-gray-500"></div>
-            <span className="text-xs">Profil</span>
-          </button>
-        </div>
-      </div>
-    </div>
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNav}>
+          <TouchableOpacity onPress={onHomeClick} style={styles.bottomNavButton}>
+            <MaterialCommunityIcons name="home" size={24} color="#9ca3af" />
+            <Text style={styles.bottomNavText}>Bosh sahifa</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {}} style={styles.bottomNavButton}>
+            <MaterialCommunityIcons name="magnify" size={24} color="#3b82f6" />
+            <Text style={[styles.bottomNavText, { color: '#3b82f6' }]}>Qidiruv</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onOrdersClick} style={styles.bottomNavButton}>
+            <MaterialCommunityIcons name="wrench" size={24} color="#9ca3af" />
+            <Text style={styles.bottomNavText}>Buyurtmalar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onProfileClick} style={styles.bottomNavButton}>
+            <View style={styles.profileAvatar} />
+            <Text style={styles.bottomNavText}>Profil</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#1a1f2e' },
+  header: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, paddingHorizontal: 16, paddingTop: 16 },
+  backButton: { marginRight: 8 },
+  headerTitle: { fontSize: 20, color: '#fff', fontWeight: 'bold' },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, paddingHorizontal: 16 },
+  searchInputWrapper: { flex: 1, position: 'relative' },
+  searchIcon: { position: 'absolute', left: 12, top: '50%', marginTop: -10 },
+  searchInput: { backgroundColor: '#252b3b', borderColor: '#374151', borderWidth: 1, borderRadius: 16, paddingVertical: 12, paddingLeft: 36, paddingRight: 12, color: '#fff' },
+  filterButton: { width: 56, height: 56, borderRadius: 16, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#374151' },
+  filterButtonActive: { backgroundColor: '#3b82f6' },
+  filtersContainer: { paddingHorizontal: 16, paddingBottom: 16 },
+  filterLabel: { color: '#9ca3af', marginBottom: 8 },
+  skillsWrapper: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 16 },
+  skillButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 12, backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', marginRight: 8, marginBottom: 8 },
+  skillButtonActive: { backgroundColor: '#3b82f6' },
+  skillText: { color: '#9ca3af' },
+  skillTextActive: { color: '#fff' },
+  ratingWrapper: { flexDirection: 'row', marginBottom: 16 },
+  ratingButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingVertical: 6, borderRadius: 12, backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', marginRight: 8 },
+  ratingButtonActive: { backgroundColor: '#facc15' },
+  ratingText: { color: '#9ca3af', marginLeft: 4 },
+  ratingTextActive: { color: '#fff', marginLeft: 4 },
+  priceWrapper: { flexDirection: 'row', marginBottom: 16, paddingHorizontal: 16 },
+  priceInput: { flex: 1, backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6, color: '#fff', marginRight: 8 },
+  resultsText: { color: '#9ca3af', marginVertical: 12, paddingHorizontal: 16 },
+  ustaCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', borderRadius: 16, padding: 12, marginHorizontal: 16, marginBottom: 12 },
+  ustaAvatar: { width: 64, height: 64, borderRadius: 16, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center' },
+  ustaAvatarText: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
+  ustaInfo: { flex: 1, marginLeft: 12 },
+  ustaName: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  ustaSkill: { color: '#9ca3af', fontSize: 14 },
+  ustaStats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  ustaRating: { flexDirection: 'row', alignItems: 'center', marginRight: 12 },
+  ustaRatingText: { color: '#fff', fontSize: 12, marginLeft: 4 },
+  ustaReviews: { color: '#9ca3af', fontSize: 12, marginLeft: 4 },
+  ustaDistance: { flexDirection: 'row', alignItems: 'center' },
+  ustaDistanceText: { color: '#9ca3af', fontSize: 12, marginLeft: 4 },
+  ustaPrice: { alignItems: 'flex-end' },
+  ustaPriceText: { color: '#f97316', fontSize: 14, fontWeight: 'bold' },
+  ustaPriceUnit: { color: '#9ca3af', fontSize: 12 },
+  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, borderTopWidth: 1, borderColor: '#374151', backgroundColor: '#252b3b', position: 'absolute', bottom: 0, width: '100%' },
+  bottomNavButton: { alignItems: 'center', justifyContent: 'center' },
+  bottomNavText: { color: '#9ca3af', fontSize: 10, marginTop: 2 },
+  profileAvatar: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#9ca3af' },
+});

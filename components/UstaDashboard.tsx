@@ -1,6 +1,9 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, DollarSign, TrendingUp, Users, Calendar, CheckCircle, Clock, Settings, ClipboardList, User, Phone } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { MotiView } from 'moti';
+import LinearGradient from 'react-native-linear-gradient';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface UstaDashboardProps {
   onBack: () => void;
@@ -35,236 +38,507 @@ export function UstaDashboard({ onBack }: UstaDashboardProps) {
   ];
 
   const stats = [
-    { label: 'Kunlik daromad', value: '450,000', icon: DollarSign, color: 'from-green-500 to-emerald-500' },
-    { label: 'Bajarilgan', value: '28', icon: CheckCircle, color: 'from-blue-500 to-cyan-500' },
-    { label: 'Mijozlar', value: '156', icon: Users, color: 'from-purple-500 to-pink-500' },
-    { label: 'O\'sish', value: '+23%', icon: TrendingUp, color: 'from-orange-500 to-red-500' },
+    { label: 'Kunlik daromad', value: '450,000', icon: 'attach-money', color: ['#22c55e', '#10b981'] }, // from-green-500 to-emerald-500
+    { label: 'Bajarilgan', value: '28', icon: 'check-circle', color: ['#3b82f6', '#06b6d4'] }, // from-blue-500 to-cyan-500
+    { label: 'Mijozlar', value: '156', icon: 'people', color: ['#8b5cf6', '#ec4899'] }, // from-purple-500 to-pink-500
+    { label: 'O\'sish', value: '+23%', icon: 'trending-up', color: ['#f97316', '#ef4444'] }, // from-orange-500 to-red-500
   ];
 
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white pb-20">
+    <View style={styles.container}>
       {/* Header */}
-      <div className="p-6 pb-4">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={onBack}
-            >
-              <ArrowLeft className="w-6 h-6 text-gray-400" />
-            </motion.button>
-            <h2>Usta paneli</h2>
-          </div>
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-            <User className="w-6 h-6 text-white" />
-          </div>
-        </div>
+      <View style={styles.headerContainer}>
+        <View style={styles.headerTop}>
+          <View style={styles.headerLeft}>
+            <TouchableOpacity onPress={onBack} activeOpacity={0.7} style={styles.backButton}>
+              <MaterialIcons name="arrow-back" size={24} color="#9ca3af" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Usta paneli</Text>
+          </View>
+          <LinearGradient
+            colors={['#f97316', '#ef4444']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.userIconContainer}
+          >
+            <MaterialCommunityIcons name="account" size={24} color="#fff" />
+          </LinearGradient>
+        </View>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {stats.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4"
+        <View style={styles.statsGrid}>
+          {stats.map((stat, index) => (
+            <MotiView
+              key={index}
+              from={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 100 }}
+              style={styles.statCard}
+            >
+              <LinearGradient
+                colors={stat.color}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.statIconContainer}
               >
-                <div className={`w-10 h-10 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center mb-3`}>
-                  <Icon className="w-5 h-5 text-white" />
-                </div>
-                <p className="text-gray-400 text-sm mb-1">{stat.label}</p>
-                <p className="text-xl">{stat.value}</p>
-              </motion.div>
-            );
-          })}
-        </div>
+                <MaterialIcons name={stat.icon} size={20} color="#fff" />
+              </LinearGradient>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+              <Text style={styles.statValue}>{stat.value}</Text>
+            </MotiView>
+          ))}
+        </View>
 
         {/* Tabs */}
-        <div className="flex gap-3 mb-6">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('bookings')}
-            className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'bookings'
-                ? 'bg-orange-500 text-white'
-                : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-            }`}
+        <View style={styles.tabsContainer}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setActiveTab('bookings')}
+            style={[
+              styles.tabButton,
+              activeTab === 'bookings' ? styles.tabButtonActive : styles.tabButtonInactive,
+            ]}
           >
-            <ClipboardList className="w-5 h-5" />
-            <span>Buyurtmalarim</span>
-          </motion.button>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setActiveTab('profile')}
-            className={`flex-1 py-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'profile'
-                ? 'bg-orange-500 text-white'
-                : 'bg-[#252b3b] text-gray-400 border border-gray-700'
-            }`}
+            <MaterialCommunityIcons name="clipboard-list" size={20} color={activeTab === 'bookings' ? '#fff' : '#9ca3af'} />
+            <Text style={[styles.tabButtonText, activeTab === 'bookings' ? styles.tabButtonTextActive : styles.tabButtonTextInactive]}>Buyurtmalarim</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setActiveTab('profile')}
+            style={[
+              styles.tabButton,
+              activeTab === 'profile' ? styles.tabButtonActive : styles.tabButtonInactive,
+            ]}
           >
-            <User className="w-5 h-5" />
-            <span>Ma&apos;lumotlarim</span>
-          </motion.button>
-        </div>
-      </div>
+            <MaterialCommunityIcons name="account" size={20} color={activeTab === 'profile' ? '#fff' : '#9ca3af'} />
+            <Text style={[styles.tabButtonText, activeTab === 'profile' ? styles.tabButtonTextActive : styles.tabButtonTextInactive]}>Ma&apos;lumotlarim</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       {/* Content */}
-      <div className="px-6">
+      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
         {activeTab === 'bookings' ? (
-          <div className="space-y-4">
+          <View style={{ paddingBottom: 100 }}>
             {bookings.map((booking, index) => (
-              <motion.div
+              <MotiView
                 key={booking.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#252b3b] border border-gray-700 rounded-2xl p-4"
+                from={{ opacity: 0, translateY: 20 }}
+                animate={{ opacity: 1, translateY: 0 }}
+                transition={{ delay: index * 100 }}
+                style={styles.bookingCard}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-orange-500 rounded-2xl flex items-center justify-center">
-                      <span>{booking.client.split(' ').map(n => n[0]).join('')}</span>
-                    </div>
-                    <div>
-                      <h4>{booking.client}</h4>
-                      <p className="text-gray-400 text-sm">{booking.service}</p>
-                    </div>
-                  </div>
+                <View style={styles.bookingHeader}>
+                  <View style={styles.bookingClientInfo}>
+                    <LinearGradient
+                      colors={['#3b82f6', '#f97316']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.bookingAvatar}
+                    >
+                      <Text style={styles.bookingAvatarText}>
+                        {booking.client.split(' ').map(n => n[0]).join('')}
+                      </Text>
+                    </LinearGradient>
+                    <View>
+                      <Text style={styles.bookingClientName}>{booking.client}</Text>
+                      <Text style={styles.bookingService}>{booking.service}</Text>
+                    </View>
+                  </View>
                   {booking.status === 'confirmed' ? (
-                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <MaterialIcons name="check-circle" size={20} color="#22c55e" />
                   ) : (
-                    <Clock className="w-5 h-5 text-yellow-500" />
+                    <MaterialIcons name="access-time" size={20} color="#eab308" />
                   )}
-                </div>
+                </View>
 
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Phone className="w-4 h-4" />
-                    <span>{booking.phone}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <Calendar className="w-4 h-4" />
-                    <span>{booking.date} • {booking.time}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-400 text-sm">
-                    <motion.div className="w-4 h-4" />
-                    <span>{booking.location}</span>
-                  </div>
-                </div>
+                <View style={styles.bookingDetails}>
+                  <View style={styles.bookingDetailRow}>
+                    <MaterialIcons name="phone" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingDetailText}>{booking.phone}</Text>
+                  </View>
+                  <View style={styles.bookingDetailRow}>
+                    <MaterialIcons name="calendar-today" size={16} color="#9ca3af" />
+                    <Text style={styles.bookingDetailText}>{booking.date} • {booking.time}</Text>
+                  </View>
+                  <View style={styles.bookingDetailRow}>
+                    <View style={{ width: 16, height: 16 }} />
+                    <Text style={styles.bookingDetailText}>{booking.location}</Text>
+                  </View>
+                </View>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-                  <div>
-                    <p className="text-gray-400 text-sm">Narx</p>
-                    <p className="text-orange-500">{booking.price} so&apos;m</p>
-                  </div>
-                  <div className="flex gap-2">
+                <View style={styles.bookingFooter}>
+                  <View>
+                    <Text style={styles.bookingPriceLabel}>Narx</Text>
+                    <Text style={styles.bookingPriceValue}>{booking.price} so&apos;m</Text>
+                  </View>
+                  <View style={styles.bookingActions}>
                     {booking.status === 'pending' ? (
                       <>
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          className="px-4 py-2 bg-red-500/20 border border-red-500/30 text-red-500 rounded-xl text-sm flex items-center justify-center"
-                        >
-                          Rad etish
-                        </motion.button>
-                        <motion.button
-                          whileTap={{ scale: 0.95 }}
-                          className="px-4 py-2 bg-green-500 rounded-xl text-sm flex items-center justify-center"
-                        >
-                          Qabul qilish
-                        </motion.button>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.rejectButton}>
+                          <Text style={styles.rejectButtonText}>Rad etish</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.acceptButton}>
+                          <Text style={styles.acceptButtonText}>Qabul qilish</Text>
+                        </TouchableOpacity>
                       </>
                     ) : (
-                      <motion.button
-                        whileTap={{ scale: 0.95 }}
-                        className="px-4 py-2 bg-blue-500 rounded-xl text-sm flex items-center justify-center"
-                      >
-                        Xabar yuborish
-                      </motion.button>
+                      <TouchableOpacity activeOpacity={0.7} style={styles.messageButton}>
+                        <Text style={styles.messageButtonText}>Xabar yuborish</Text>
+                      </TouchableOpacity>
                     )}
-                  </div>
-                </div>
-              </motion.div>
+                  </View>
+                </View>
+              </MotiView>
             ))}
-          </div>
+          </View>
         ) : (
-          <div className="space-y-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-[#252b3b] border border-gray-700 rounded-2xl p-6"
+          <View style={{ paddingBottom: 100 }}>
+            <MotiView
+              from={{ opacity: 0, translateY: 20 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              style={styles.profileCard}
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3>Profil ma&apos;lumotlari</h3>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-xl flex items-center justify-center"
-                >
-                  <Settings className="w-5 h-5 text-gray-400" />
-                </motion.button>
-              </div>
+              <View style={styles.profileHeader}>
+                <Text style={styles.profileTitle}>Profil ma&apos;lumotlari</Text>
+                <TouchableOpacity activeOpacity={0.7} style={styles.profileSettingsButton}>
+                  <MaterialIcons name="settings" size={20} color="#9ca3af" />
+                </TouchableOpacity>
+              </View>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Ism</label>
-                  <input
-                    type="text"
+              <View style={styles.profileFields}>
+                <View style={styles.profileField}>
+                  <Text style={styles.profileLabel}>Ism</Text>
+                  <TextInput
                     value="Ahmadjon Karimov"
-                    className="w-full bg-[#1a1f2e] border border-gray-700 rounded-xl py-3 px-4 text-white"
-                    readOnly
+                    style={styles.profileInput}
+                    editable={false}
                   />
-                </div>
+                </View>
 
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Mutaxassislik</label>
-                  <input
-                    type="text"
+                <View style={styles.profileField}>
+                  <Text style={styles.profileLabel}>Mutaxassislik</Text>
+                  <TextInput
                     value="Elektrik"
-                    className="w-full bg-[#1a1f2e] border border-gray-700 rounded-xl py-3 px-4 text-white"
-                    readOnly
+                    style={styles.profileInput}
+                    editable={false}
                   />
-                </div>
+                </View>
 
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Soatlik narx</label>
-                  <input
-                    type="text"
+                <View style={styles.profileField}>
+                  <Text style={styles.profileLabel}>Soatlik narx</Text>
+                  <TextInput
                     value="80,000 so'm"
-                    className="w-full bg-[#1a1f2e] border border-gray-700 rounded-xl py-3 px-4 text-white"
+                    style={styles.profileInput}
                   />
-                </div>
+                </View>
 
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Telefon</label>
-                  <input
-                    type="text"
+                <View style={styles.profileField}>
+                  <Text style={styles.profileLabel}>Telefon</Text>
+                  <TextInput
                     value="+998 90 123 45 67"
-                    className="w-full bg-[#1a1f2e] border border-gray-700 rounded-xl py-3 px-4 text-white"
+                    style={styles.profileInput}
                   />
-                </div>
+                </View>
 
-                <div>
-                  <label className="text-gray-400 text-sm mb-2 block">Manzil</label>
-                  <input
-                    type="text"
+                <View style={styles.profileField}>
+                  <Text style={styles.profileLabel}>Manzil</Text>
+                  <TextInput
                     value="Toshkent, Yunusobod tumani"
-                    className="w-full bg-[#1a1f2e] border border-gray-700 rounded-xl py-3 px-4 text-white"
+                    style={styles.profileInput}
                   />
-                </div>
+                </View>
 
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-4 rounded-xl mt-6 flex items-center justify-center"
-                >
-                  Ma&apos;lumotlarni yangilash
-                </motion.button>
-              </div>
-            </motion.div>
-          </div>
+                <TouchableOpacity activeOpacity={0.7} style={styles.profileUpdateButton}>
+                  <Text style={styles.profileUpdateButtonText}>Ma&apos;lumotlarni yangilash</Text>
+                </TouchableOpacity>
+              </View>
+            </MotiView>
+          </View>
         )}
-      </div>
-    </div>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+    paddingBottom: 20,
+  },
+  headerContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 16,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  userIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+  },
+  statCard: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 16,
+    width: '48%',
+    marginBottom: 16,
+  },
+  statIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  statLabel: {
+    color: '#9ca3af',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  statValue: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 24,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: '#f97316',
+  },
+  tabButtonInactive: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+  },
+  tabButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  tabButtonTextActive: {
+    color: 'white',
+  },
+  tabButtonTextInactive: {
+    color: '#9ca3af',
+  },
+  contentContainer: {
+    paddingHorizontal: 24,
+  },
+  bookingCard: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 16,
+    marginBottom: 16,
+  },
+  bookingHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  bookingClientInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  bookingAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bookingAvatarText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 18,
+  },
+  bookingClientName: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  bookingService: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+  bookingDetails: {
+    marginBottom: 16,
+  },
+  bookingDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
+  bookingDetailText: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+  bookingFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopColor: '#374151',
+    borderTopWidth: 1,
+    paddingTop: 16,
+  },
+  bookingPriceLabel: {
+    color: '#9ca3af',
+    fontSize: 12,
+  },
+  bookingPriceValue: {
+    color: '#f97316',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bookingActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  rejectButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'rgba(239, 68, 68, 0.125)',
+    borderColor: 'rgba(239, 68, 68, 0.188)',
+    borderWidth: 1,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rejectButtonText: {
+    color: '#ef4444',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  acceptButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#22c55e',
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  acceptButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  messageButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#3b82f6',
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  messageButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  profileCard: {
+    backgroundColor: '#252b3b',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 24,
+    padding: 24,
+    marginBottom: 16,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  profileTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  profileSettingsButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#1a1f2e',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileFields: {
+    gap: 16,
+  },
+  profileField: {
+    gap: 4,
+  },
+  profileLabel: {
+    color: '#9ca3af',
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  profileInput: {
+    backgroundColor: '#1a1f2e',
+    borderColor: '#374151',
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    color: 'white',
+    fontSize: 14,
+  },
+  profileUpdateButton: {
+    marginTop: 24,
+    backgroundColor: '#f97316',
+    paddingVertical: 16,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileUpdateButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

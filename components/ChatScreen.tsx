@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { ArrowLeft, Send, Paperclip, Phone, Video } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { ArrowLeft, Send, Paperclip, Phone, Video } from 'lucide-react-native';
 
 interface ChatScreenProps {
   onBack: () => void;
@@ -8,7 +8,7 @@ interface ChatScreenProps {
 
 export function ChatScreen({ onBack }: ChatScreenProps) {
   const [message, setMessage] = useState('');
-  
+
   const messages = [
     { id: 1, sender: 'usta', text: 'Assalomu alaykum! Sizga qanday yordam bera olaman?', time: '14:30' },
     { id: 2, sender: 'user', text: 'Uyimda elektr simlarini almashtirishim kerak', time: '14:32' },
@@ -18,90 +18,215 @@ export function ChatScreen({ onBack }: ChatScreenProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1a1f2e] text-white flex flex-col">
+    <View style={styles.container}>
       {/* Header */}
-      <div className="bg-[#252b3b] border-b border-gray-700 p-4">
-        <div className="flex items-center gap-4">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={onBack}
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-400" />
-          </motion.button>
-          
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center">
-            <span>AK</span>
-          </div>
-          
-          <div className="flex-1">
-            <h3>Ahmadjon Karimov</h3>
-            <p className="text-gray-400 text-sm">Onlayn</p>
-          </div>
-
-          <div className="flex gap-2">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-full flex items-center justify-center"
-            >
-              <Phone className="w-5 h-5 text-blue-500" />
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-full flex items-center justify-center"
-            >
-              <Video className="w-5 h-5 text-blue-500" />
-            </motion.button>
-          </div>
-        </div>
-      </div>
-
+      <View style={styles.header}>
+        <View style={styles.headerRow}>
+          <Pressable onPress={onBack} style={styles.iconButton}>
+            <ArrowLeft size={24} color="#9ca3af" />
+          </Pressable>
+          <View style={styles.avatar}>
+            <Text style={{color:'#fff', fontWeight:'bold'}}>AK</Text>
+          </View>
+          <View style={styles.headerInfo}>
+            <Text style={styles.headerTitle}>Ahmadjon Karimov</Text>
+            <Text style={styles.headerSubtitle}>Onlayn</Text>
+          </View>
+          <View style={styles.headerActions}>
+            <Pressable style={styles.actionButton}>
+              <Phone size={20} color="#3b82f6" />
+            </Pressable>
+            <Pressable style={styles.actionButton}>
+              <Video size={20} color="#3b82f6" />
+            </Pressable>
+          </View>
+        </View>
+      </View>
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <ScrollView
+        style={styles.messages}
+        contentContainerStyle={{ paddingVertical: 8 }}
+        showsVerticalScrollIndicator={false}
+      >
         {messages.map((msg) => (
-          <motion.div
+          <View
             key={msg.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            style={[
+              styles.messageRow,
+              msg.sender === 'user' ? { justifyContent: 'flex-end' } : { justifyContent: 'flex-start' }
+            ]}
           >
-            <div className={`max-w-[75%] ${
-              msg.sender === 'user' 
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600' 
-                : 'bg-[#252b3b] border border-gray-700'
-            } rounded-2xl p-4`}>
-              <p className="mb-1">{msg.text}</p>
-              <p className="text-xs text-gray-300 text-right">{msg.time}</p>
-            </div>
-          </motion.div>
+            <View
+              style={[
+                styles.messageBubble,
+                msg.sender === 'user'
+                  ? styles.messageBubbleUser
+                  : styles.messageBubbleUsta
+              ]}
+            >
+              <Text style={styles.messageText}>{msg.text}</Text>
+              <Text style={styles.messageTime}>{msg.time}</Text>
+            </View>
+          </View>
         ))}
-      </div>
-
+      </ScrollView>
       {/* Input */}
-      <div className="bg-[#252b3b] border-t border-gray-700 p-4">
-        <div className="flex items-center gap-3">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 bg-[#1a1f2e] border border-gray-700 rounded-full flex items-center justify-center"
-          >
-            <Paperclip className="w-5 h-5 text-gray-400" />
-          </motion.button>
-          
-          <input
-            type="text"
+      <View style={styles.inputBar}>
+        <View style={styles.inputRow}>
+          <Pressable style={styles.inputIconButton}>
+            <Paperclip size={20} color="#9ca3af" />
+          </Pressable>
+          <TextInput
+            style={styles.input}
             placeholder="Yangi xabar yozing..."
+            placeholderTextColor="#6b7280"
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="flex-1 bg-[#1a1f2e] border border-gray-700 rounded-2xl py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+            onChangeText={setMessage}
           />
-          
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center"
-          >
-            <Send className="w-5 h-5" />
-          </motion.button>
-        </div>
-      </div>
-    </div>
+          <Pressable style={styles.sendButton}>
+            <Send size={20} color="#fff" />
+          </Pressable>
+        </View>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+  },
+  header: {
+    backgroundColor: '#252b3b',
+    borderBottomWidth: 1,
+    borderBottomColor: '#374151',
+    padding: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  iconButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // Gradient imitation: fallback to a solid color
+    backgroundColor: '#3b82f6',
+    // for a real gradient, use a LinearGradient component
+  },
+  headerInfo: {
+    flex: 1,
+    marginLeft: 8,
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  headerSubtitle: {
+    color: '#9ca3af',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1a1f2e',
+    borderWidth: 1,
+    borderColor: '#374151',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 4,
+  },
+  messages: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  messageRow: {
+    flexDirection: 'row',
+    marginVertical: 6,
+  },
+  messageBubble: {
+    maxWidth: '75%',
+    borderRadius: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  messageBubbleUser: {
+    backgroundColor: '#2563eb',
+  },
+  messageBubbleUsta: {
+    backgroundColor: '#252b3b',
+    borderWidth: 1,
+    borderColor: '#374151',
+  },
+  messageText: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  messageTime: {
+    color: '#d1d5db',
+    fontSize: 12,
+    textAlign: 'right',
+  },
+  inputBar: {
+    backgroundColor: '#252b3b',
+    borderTopWidth: 1,
+    borderTopColor: '#374151',
+    padding: 16,
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  inputIconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1a1f2e',
+    borderWidth: 1,
+    borderColor: '#374151',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#1a1f2e',
+    borderWidth: 1,
+    borderColor: '#374151',
+    borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    color: '#fff',
+    fontSize: 16,
+    marginHorizontal: 4,
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // Gradient imitation: fallback
+    backgroundColor: '#2563eb',
+  },
+});
