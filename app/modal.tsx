@@ -1,29 +1,51 @@
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
-import { StyleSheet } from 'react-native';
-
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+import React from 'react';
 
 export default function ModalScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title">This is a modal</ThemedText>
-      <Link href="/" dismissTo style={styles.link}>
-        <ThemedText type="link">Go to home screen</ThemedText>
+    <View style={styles.container}>
+      <Text style={styles.title}>Bu Modal Oynasi</Text>
+      <Text style={styles.text}>
+        Bu joy faqat test yoki qo‘shimcha ma’lumot uchun ishlatiladi.
+      </Text>
+
+      <Link href="/" asChild>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>🏠 Home ga qaytish</Text>
+        </TouchableOpacity>
       </Link>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: '#1a1f2e',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  title: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  text: {
+    color: '#ccc',
+    textAlign: 'center',
+    marginBottom: 30,
+  },
+  button: {
+    backgroundColor: '#4A90E2',
+    paddingHorizontal: 25,
+    paddingVertical: 12,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });

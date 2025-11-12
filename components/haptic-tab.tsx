@@ -1,22 +1,38 @@
 import React from 'react';
-import { Pressable } from 'react-native';
-import HapticFeedback from 'react-native-haptic-feedback';
+import { Pressable, ViewStyle, StyleProp, Platform } from 'react-native';
+import * as Haptics from 'expo-haptics';
 
 type HapticTabProps = {
   onPress?: () => void;
   children: React.ReactNode;
-  style?: any;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const HapticTab: React.FC<HapticTabProps> = ({ onPress, children, style }) => {
-  const handlePress = () => {
-    // Haptic touch effekti
-    HapticFeedback.trigger('impactLight');
+  const handlePress = async () => {
+    // Haptic faqat Android yoki iOS da ishlaydi, webda emas
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      try {
+        await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      } catch (e) {
+        console.log('Haptic feedback not supported:', e);
+      }
+    }
+
     if (onPress) onPress();
   };
 
   return (
-    <Pressable onPress={handlePress} style={style}>
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [
+        {
+          opacity: pressed ? 0.8 : 1,
+          transform: [{ scale: pressed ? 0.97 : 1 }],
+        },
+        style,
+      ]}
+    >
       {children}
     </Pressable>
   );

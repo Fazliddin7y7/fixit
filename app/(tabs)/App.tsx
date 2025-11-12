@@ -1,5 +1,11 @@
+// App.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Animated, StyleSheet } from 'react-native';
+
+// LinearGradient
+import { LinearGradient } from 'expo-linear-gradient';
+
+// Barcha ekranlar import qilinadi (katta harf bilan)
 import { WelcomeScreen } from './../../components/WelcomeScreen';
 import { LoginScreen } from './../../components/LoginScreen';
 import { SignupScreen } from './../../components/SignupScreen';
@@ -11,37 +17,36 @@ import { UserDashboard } from './../../components/UserDashboard';
 import { UstaDashboard } from './../../components/UstaDashboard';
 import { CustomerProfileScreen } from './../../components/CustomerProfileScreen';
 
+// Ekran turlari
 type Screen =
-  | 'welcome'
-  | 'login'
-  | 'signup'
-  | 'home'
-  | 'search'
-  | 'ustaProfile'
-  | 'chat'
-  | 'userDashboard'
-  | 'customerProfile'
-  | 'ustaDashboard';
-
-type UserRole = 'customer' | 'professional' | null;
+  | 'Welcome'
+  | 'Login'
+  | 'Signup'
+  | 'Home'
+  | 'Search'
+  | 'UstaProfile'
+  | 'Chat'
+  | 'UserDashboard'
+  | 'CustomerProfile'
+  | 'UstaDashboard';
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<Screen>('welcome');
-  const [usrRole, setUserRole] = useState<UserRole>(null);
+  const [currentScreen, setCurrentScreen] = useState<Screen>('Welcome');
 
+  // Animatsiya
   const opacity = useRef(new Animated.Value(0)).current;
-  const translateX = useRef(new Animated.Value(20)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
     opacity.setValue(0);
-    translateX.setValue(20);
+    translateY.setValue(20);
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 1,
         duration: 300,
         useNativeDriver: true,
       }),
-      Animated.timing(translateX, {
+      Animated.timing(translateY, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true,
@@ -49,111 +54,96 @@ export default function App() {
     ]).start();
   }, [currentScreen]);
 
-  const handleSignup = (role: UserRole) => {
-    setUserRole(role);
-    if (role === 'professional') {
-      setCurrentScreen('ustaDashboard');
-    } else {
-      setCurrentScreen('home');
-    }
-  };
-
-  const handleLogin = () => {
-    setUserRole('customer');
-    setCurrentScreen('home');
-  };
-
   const renderScreen = () => {
     switch (currentScreen) {
-      case 'welcome':
-        return <WelcomeScreen onGetStarted={() => setCurrentScreen('signup')} />;
-      case 'login':
+      case 'Welcome':
+        return <WelcomeScreen onGetStarted={() => setCurrentScreen('Signup')} />;
+
+      case 'Login':
         return (
           <LoginScreen
-            onBack={() => setCurrentScreen('welcome')}
-            onLogin={handleLogin}
-            onSignup={() => setCurrentScreen('signup')}
+            onBack={() => setCurrentScreen('Welcome')}
+            onLogin={() => setCurrentScreen('Home')}
+            onSignup={() => setCurrentScreen('Signup')}
           />
         );
-      case 'signup':
+
+      case 'Signup':
         return (
           <SignupScreen
-            onBack={() => setCurrentScreen('login')}
-            onSignup={handleSignup}
+            onBack={() => setCurrentScreen('Login')}
+            onSignup={(role) => setCurrentScreen('Home')}
           />
         );
-      case 'home':
+
+      case 'Home':
         return (
           <HomeScreen
-            onCategoryClick={() => setCurrentScreen('search')}
-            onSearchClick={() => setCurrentScreen('search')}
-            onOrdersClick={() => setCurrentScreen('userDashboard')}
-            onProfileClick={() => setCurrentScreen('customerProfile')}
+            onCategoryClick={(category) => setCurrentScreen('Search')}
+            onSearchClick={() => setCurrentScreen('Search')}
+            onOrdersClick={() => setCurrentScreen('UserDashboard')}
+            onProfileClick={() => setCurrentScreen('CustomerProfile')}
             currentTab="home"
           />
         );
-      case 'search':
+
+      case 'Search':
         return (
           <SearchFilterScreen
-            onBack={() => setCurrentScreen('home')}
-            onSelectUsta={() => setCurrentScreen('ustaProfile')}
-            onHomeClick={() => setCurrentScreen('home')}
-            onOrdersClick={() => setCurrentScreen('userDashboard')}
-            onProfileClick={() => setCurrentScreen('customerProfile')}
+            onBack={() => setCurrentScreen('Home')}
+            onSelectUsta={(id) => setCurrentScreen('UstaProfile')}
+            onHomeClick={() => setCurrentScreen('Home')}
+            onOrdersClick={() => setCurrentScreen('UserDashboard')}
+            onProfileClick={() => setCurrentScreen('CustomerProfile')}
           />
         );
-      case 'ustaProfile':
+
+      case 'UstaProfile':
         return (
           <UstaProfileScreen
-            onBack={() => setCurrentScreen('search')}
-            onBooking={() => setCurrentScreen('userDashboard')}
-            onChat={() => setCurrentScreen('chat')}
+            onBack={() => setCurrentScreen('Search')}
+            onChat={() => setCurrentScreen('Chat')}
+            onBooking={() => alert('Booking clicked!')}
           />
         );
-      case 'chat':
-        return <ChatScreen onBack={() => setCurrentScreen('ustaProfile')} />;
-      case 'userDashboard':
+
+      case 'Chat':
+        return <ChatScreen onBack={() => setCurrentScreen('UstaProfile')} />;
+
+      case 'UserDashboard':
         return (
           <UserDashboard
-            onBack={() => setCurrentScreen('home')}
-            onHomeClick={() => setCurrentScreen('home')}
-            onSearchClick={() => setCurrentScreen('search')}
-            onProfileClick={() => setCurrentScreen('customerProfile')}
+            onBack={() => setCurrentScreen('Home')}
+            onHomeClick={() => setCurrentScreen('Home')}
+            onSearchClick={() => setCurrentScreen('Search')}
+            onProfileClick={() => setCurrentScreen('CustomerProfile')}
           />
         );
-      case 'customerProfile':
+
+      case 'CustomerProfile':
         return (
           <CustomerProfileScreen
-            onBack={() => setCurrentScreen('home')}
-            onHomeClick={() => setCurrentScreen('home')}
-            onSearchClick={() => setCurrentScreen('search')}
-            onOrdersClick={() => setCurrentScreen('userDashboard')}
-            onLogout={() => {
-              setUserRole(null);
-              setCurrentScreen('welcome');
-            }}
+            onBack={() => setCurrentScreen('Home')}
+            onHomeClick={() => setCurrentScreen('Home')}
+            onSearchClick={() => setCurrentScreen('Search')}
+            onOrdersClick={() => setCurrentScreen('UserDashboard')}
+            onLogout={() => setCurrentScreen('Welcome')}
           />
         );
-      case 'ustaDashboard':
-        return <UstaDashboard onBack={() => setCurrentScreen('welcome')} />;
+
+      case 'UstaDashboard':
+        return <UstaDashboard onBack={() => setCurrentScreen('Welcome')} />;
+
       default:
-        return <WelcomeScreen onGetStarted={() => setCurrentScreen('signup')} />;
+        return <WelcomeScreen onGetStarted={() => setCurrentScreen('Signup')} />;
     }
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Animated.View
-          style={{
-            opacity,
-            transform: [{ translateX }],
-            flex: 1,
-          }}
-        >
-          {renderScreen()}
-        </Animated.View>
-      </View>
+      <Animated.View style={{ flex: 1, opacity, transform: [{ translateY }] }}>
+        {renderScreen()}
+      </Animated.View>
     </View>
   );
 }
@@ -161,15 +151,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1f2e',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  innerContainer: {
-    flex: 1,
-    width: '100%',
-    maxWidth: 400,
-    backgroundColor: '#1a1f2e',
-    overflow: 'hidden',
+    backgroundColor: '#0f1419',
   },
 });

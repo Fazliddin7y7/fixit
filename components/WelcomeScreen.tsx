@@ -1,8 +1,10 @@
+// WelcomeScreen.tsx
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MotiView } from 'moti';
 import { Wrench } from 'lucide-react-native';
+import { Easing } from 'react-native-reanimated';
 
 interface WelcomeScreenProps {
   onGetStarted: () => void;
@@ -11,6 +13,7 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
   return (
     <View style={styles.container}>
+      {/* Icon */}
       <MotiView
         from={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -27,6 +30,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
         </LinearGradient>
       </MotiView>
 
+      {/* Title */}
       <MotiView
         from={{ translateY: 20, opacity: 0 }}
         animate={{ translateY: 0, opacity: 1 }}
@@ -35,6 +39,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
         <Text style={styles.title}>FixIt</Text>
       </MotiView>
 
+      {/* Subtitle */}
       <MotiView
         from={{ translateY: 20, opacity: 0 }}
         animate={{ translateY: 0, opacity: 1 }}
@@ -43,6 +48,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
         <Text style={styles.subtitle}>Ishonchli ustalarni yaqin atrofingizdan toping</Text>
       </MotiView>
 
+      {/* Buttons */}
       <MotiView
         from={{ translateY: 20, opacity: 0 }}
         animate={{ translateY: 0, opacity: 1 }}
@@ -64,6 +70,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
         </Pressable>
       </MotiView>
 
+      {/* Pagination dots */}
       <View style={styles.pagination}>
         {[0, 1, 2].map((i) => (
           <MotiView
@@ -78,8 +85,7 @@ export function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
   );
 }
 
-import { Easing } from 'react-native-reanimated';
-
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
