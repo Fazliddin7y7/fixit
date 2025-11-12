@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { Search, Zap, Wrench, Droplet, PaintBucket, Hammer, Wind, Home as HomeIcon } from 'lucide-react';
+import { Search, Zap, Wrench, Droplet, PaintBucket, Hammer, Wind, Home as HomeIcon } from 'lucide-react-native';
+
 
 interface HomeScreenProps {
   onCategoryClick: (category: string) => void;
