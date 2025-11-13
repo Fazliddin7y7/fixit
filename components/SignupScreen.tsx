@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface SignupScreenProps {
@@ -7,7 +8,7 @@ interface SignupScreenProps {
   onSignup: (role: 'customer' | 'professional') => void;
 }
 
-export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
+export  function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
   const [role, setRole] = useState<'customer' | 'professional'>('customer');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,53 +19,58 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
   const translateY = useRef(new Animated.Value(20)).current;
 
   useEffect(() => {
-    Animated.timing(opacity, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(translateY, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [opacity, translateY]);
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={onBack}
-          style={styles.backButton}
-        >
-          <MaterialCommunityIcons name="arrow-left" size={24} color="#9ca3af" />
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, width: '100%' }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <TouchableOpacity onPress={onBack} style={styles.backButton}>
+          <MaterialCommunityIcons name="arrow-left" size={24} color="#9CA3AF" />
         </TouchableOpacity>
 
-        <Animated.View style={[styles.animatedContainer, { opacity, transform: [{ translateY }] }]}>
-          <Text style={styles.title}>Ro&apos;yxatdan o&apos;tish</Text>
-          <Text style={styles.subtitle}>Yangi akkaunt yaratish</Text>
+        <Animated.View style={[styles.content, { opacity, transform: [{ translateY }] }]}>
+          <Text style={styles.title}>Ro‘yxatdan o‘tish</Text>
+          <Text style={styles.subtitle}>Yangi akkaunt yaratish uchun ma’lumotlarni kiriting</Text>
 
           <View style={styles.roleContainer}>
             <TouchableOpacity
-              activeOpacity={0.7}
               onPress={() => setRole('customer')}
               style={[
                 styles.roleButton,
                 role === 'customer' ? styles.customerRoleActive : styles.roleInactive,
               ]}
             >
-              <Text style={role === 'customer' ? styles.roleTextActive : styles.roleTextInactive}>Mijoz</Text>
+              <Text style={role === 'customer' ? styles.roleTextActive : styles.roleTextInactive}>
+                Mijoz
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              activeOpacity={0.7}
               onPress={() => setRole('professional')}
               style={[
                 styles.roleButton,
                 role === 'professional' ? styles.professionalRoleActive : styles.roleInactive,
               ]}
             >
-              <Text style={role === 'professional' ? styles.roleTextActive : styles.roleTextInactive}>Usta</Text>
+              <Text
+                style={role === 'professional' ? styles.roleTextActive : styles.roleTextInactive}
+              >
+                Usta
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -72,7 +78,7 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
             <View style={styles.inputWrapper}>
               <MaterialCommunityIcons name="account" size={20} color="#6b7280" style={styles.icon} />
               <TextInput
-                placeholder="To'liq ismingiz"
+                placeholder="To‘liq ismingiz"
                 placeholderTextColor="#6b7280"
                 value={name}
                 onChangeText={setName}
@@ -119,14 +125,14 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
           </View>
 
           <TouchableOpacity
-            activeOpacity={0.7}
+            activeOpacity={0.8}
             onPress={() => onSignup(role)}
             style={[
               styles.signupButton,
               role === 'customer' ? styles.customerButton : styles.professionalButton,
             ]}
           >
-            <Text style={styles.signupButtonText}>Ro&apos;yxatdan o&apos;tish</Text>
+            <Text style={styles.signupButtonText}>Ro‘yxatdan o‘tish</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
@@ -136,40 +142,41 @@ export function SignupScreen({ onBack, onSignup }: SignupScreenProps) {
             </TouchableOpacity>
           </View>
         </Animated.View>
-      </View>
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1f2e',
-  },
-  innerContainer: {
-    padding: 24,
-    flex: 1,
-  },
-  backButton: {
-    marginBottom: 32,
-    width: 32,
-    height: 32,
-    justifyContent: 'center',
+    backgroundColor: '#0f1419',
     alignItems: 'center',
   },
-  animatedContainer: {
+  backButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    padding: 8,
+    zIndex: 10,
+  },
+  content: {
     flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 24,
   },
   title: {
-    fontSize: 24,
-    color: 'white',
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
     marginBottom: 8,
-    fontWeight: '600',
+    textAlign: 'center',
   },
   subtitle: {
-    color: '#9ca3af',
-    marginBottom: 24,
     fontSize: 14,
+    color: '#9CA3AF',
+    marginBottom: 24,
+    textAlign: 'center',
   },
   roleContainer: {
     flexDirection: 'row',
@@ -257,7 +264,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   loginText: {
-    color: '#3b82f6',
+    color: '#3B82F6',
     fontWeight: '600',
     fontSize: 14,
   },

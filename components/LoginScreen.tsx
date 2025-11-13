@@ -1,5 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Animated,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Mail, Lock } from 'lucide-react-native';
 
 interface LoginScreenProps {
@@ -8,10 +18,7 @@ interface LoginScreenProps {
   onSignup: () => void;
 }
 
-export function LoginScreen({ onBack, onLogin, onSignup }: LoginScreenProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+export  function LoginScreen({ onBack, onLogin, onSignup }: LoginScreenProps) {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
 
@@ -31,130 +38,145 @@ export function LoginScreen({ onBack, onLogin, onSignup }: LoginScreenProps) {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onBack} style={styles.backButton}>
-        <ArrowLeft size={24} color="#9CA3AF" />
-      </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        style={{ flex: 1, width: '100%' }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <TouchableOpacity onPress={onBack} style={styles.backButton}>
+          <ArrowLeft size={24} color="#9CA3AF" />
+        </TouchableOpacity>
 
-      <Animated.View style={{ opacity, transform: [{ translateY }] }}>
-        <Text style={styles.title}>Kirish</Text>
-        <Text style={styles.subtitle}>Akkauntingizga kiring</Text>
+        <Animated.View
+          style={[
+            styles.content,
+            { opacity, transform: [{ translateY }] },
+          ]}
+        >
+          <Text style={styles.title}>Tizimga kirish</Text>
+          <Text style={styles.subtitle}>FixIt hisobingizga kirish uchun ma’lumotlarni kiriting</Text>
 
-        <View style={styles.inputContainer}>
-          <View style={styles.inputWrapper}>
-            <Mail size={20} color="#6B7280" style={styles.icon} />
+          <View style={styles.inputContainer}>
+            <Mail size={20} color="#9CA3AF" style={styles.icon} />
             <TextInput
-              placeholder="Email manzilingiz"
-              placeholderTextColor="#9CA3AF"
-              value={email}
-              onChangeText={setEmail}
               style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#9CA3AF"
               keyboardType="email-address"
               autoCapitalize="none"
             />
           </View>
 
-          <View style={styles.inputWrapper}>
-            <Lock size={20} color="#6B7280" style={styles.icon} />
+          <View style={styles.inputContainer}>
+            <Lock size={20} color="#9CA3AF" style={styles.icon} />
             <TextInput
+              style={styles.input}
               placeholder="Parol"
               placeholderTextColor="#9CA3AF"
-              value={password}
-              onChangeText={setPassword}
-              style={styles.input}
               secureTextEntry
             />
           </View>
-        </View>
 
-        <TouchableOpacity style={styles.forgotButton}>
-          <Text style={styles.forgotText}>Parolni unutdingizmi?</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-          <Text style={styles.loginButtonText}>Kirish</Text>
-        </TouchableOpacity>
-
-        <View style={styles.signupContainer}>
-          <Text style={styles.signupText}>Akkauntingiz yo&apos;qmi? </Text>
-          <TouchableOpacity onPress={onSignup}>
-            <Text style={styles.signupButton}>Ro&apos;yxatdan o&apos;tish</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+            <Text style={styles.loginButtonText}>Kirish</Text>
           </TouchableOpacity>
-        </View>
-      </Animated.View>
-    </View>
+
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Hisobingiz yo‘qmi?</Text>
+            <TouchableOpacity onPress={onSignup}>
+              <Text style={styles.signupText}>Ro‘yxatdan o‘tish</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1a1f2e',
-    padding: 24,
+    backgroundColor: '#0f1419',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   backButton: {
-    marginBottom: 32,
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    padding: 8,
+    zIndex: 10,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    width: '100%',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 4,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
+    fontSize: 14,
     color: '#9CA3AF',
     marginBottom: 32,
+    textAlign: 'center',
+    paddingHorizontal: 10,
   },
   inputContainer: {
-    marginBottom: 24,
-  },
-  inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#252b3b',
-    borderColor: '#374151',
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingHorizontal: 16,
+    backgroundColor: '#1f2937',
+    borderRadius: 12,
     marginBottom: 16,
+    paddingHorizontal: 12,
+    width: '100%',
   },
   icon: {
-    marginRight: 12,
+    marginRight: 8,
   },
   input: {
     flex: 1,
     color: '#fff',
-    height: 48,
-  },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 24,
-  },
-  forgotText: {
-    color: '#3B82F6',
-    fontSize: 14,
+    paddingVertical: 12,
+    fontSize: 16,
   },
   loginButton: {
     backgroundColor: '#3B82F6',
-    paddingVertical: 16,
-    borderRadius: 16,
+    borderRadius: 24,
+    paddingVertical: 14,
     alignItems: 'center',
-    marginBottom: 16,
+    width: '100%',
+    marginTop: 12,
+    shadowColor: '#3B82F6',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 5,
   },
   loginButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
     fontSize: 16,
+    fontWeight: '600',
   },
-  signupContainer: {
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: 24,
+  },
+  footerText: {
+    color: '#9CA3AF',
+    fontSize: 14,
   },
   signupText: {
-    color: '#9CA3AF',
-  },
-  signupButton: {
     color: '#3B82F6',
-    marginLeft: 4,
+    fontSize: 14,
+    marginLeft: 6,
+    fontWeight: '600',
   },
 });

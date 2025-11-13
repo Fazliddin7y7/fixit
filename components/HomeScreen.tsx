@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Search, Zap, Wrench, Droplet, PaintBucket, Hammer, Wind, Home as HomeIcon } from 'lucide-react-native';
 
 
@@ -28,7 +29,7 @@ export function HomeScreen({
   currentTab = 'home',
 }: HomeScreenProps) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header */}
         <View style={styles.header}>
@@ -135,7 +136,7 @@ export function HomeScreen({
           <Text style={[styles.navText, currentTab === 'profile' && styles.navTextActive]}>Profil</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

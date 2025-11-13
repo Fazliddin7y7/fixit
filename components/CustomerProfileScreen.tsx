@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, Animated, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { ArrowLeft, User, Mail, Phone, MapPin, Settings, LogOut, Bell, Shield, HelpCircle, ChevronRight, Home, Search, Wrench } from 'lucide-react-native';
 
@@ -29,7 +30,7 @@ export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOr
   }, [animatedOpacity, animatedTranslateY]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
@@ -176,7 +177,7 @@ export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOr
   <Text style={[styles.bottomNavText, styles.bottomNavActiveText]}>Profil</Text>
 </Pressable>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
