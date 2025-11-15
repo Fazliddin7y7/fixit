@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet, Animated, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, User, Mail, Phone, MapPin, Settings, LogOut, Bell, Shield, HelpCircle, ChevronRight, Home, Search, Wrench } from 'lucide-react-native';
 
 interface CustomerProfileScreenProps {

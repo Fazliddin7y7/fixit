@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions, Pressable } from 'react-native';
 import { MotiView } from 'moti';
-import LinearGradient from 'react-native-linear-gradient';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Star, MapPin, Clock, Award, MessageCircle } from 'react-native-feather';
 
 interface UstaProfileScreenProps {
