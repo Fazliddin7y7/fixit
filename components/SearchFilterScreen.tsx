@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MotiView } from 'moti';
+import { Easing } from 'react-native-reanimated';
+import { Search, Wrench, Home as HomeIcon } from 'lucide-react-native';
+
 interface SearchFilterScreenProps {
   onBack: () => void;
   onSelectUsta: (id: number) => void;
   onHomeClick: () => void;
+  onSearchClick: () => void;
   onOrdersClick: () => void;
   onProfileClick: () => void;
+  currentTab?: 'home' | 'search' | 'orders' | 'profile';
 }
 
 const professionals = [
@@ -22,8 +28,10 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
   onBack,
   onSelectUsta,
   onHomeClick,
+  onSearchClick,
   onOrdersClick,
   onProfileClick,
+  currentTab = 'search',
 }) => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,10 +44,11 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+        
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={onBack} style={styles.backButton}>
-            <MaterialIcons name="arrow-back" size={24} color="#9ca3af" />
+            <MaterialCommunityIcons name="arrow-left" size={24} color="#9ca3af" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Qidiruv va filtr</Text>
         </View>
@@ -47,7 +56,7 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
         {/* Search Bar */}
         <View style={styles.searchContainer}>
           <View style={styles.searchInputWrapper}>
-            <MaterialIcons name="search" size={20} color="#9ca3af" style={styles.searchIcon} />
+            <MaterialCommunityIcons name="magnify" size={20} color="#9ca3af" style={styles.searchIcon} />
             <TextInput
               placeholder="Usta yoki xizmat qidiring..."
               placeholderTextColor="#9ca3af"
@@ -56,11 +65,12 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
               style={styles.searchInput}
             />
           </View>
+
           <TouchableOpacity
             onPress={() => setShowFilters(!showFilters)}
             style={[styles.filterButton, showFilters ? styles.filterButtonActive : null]}
           >
-            <MaterialIcons name="tune" size={20} color={showFilters ? '#fff' : '#9ca3af'} />
+            <MaterialCommunityIcons name="tune" size={20} color={showFilters ? '#fff' : '#9ca3af'} />
           </TouchableOpacity>
         </View>
 
@@ -68,6 +78,7 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
         {showFilters && (
           <View style={styles.filtersContainer}>
             <Text style={styles.filterLabel}>Xizmat turi</Text>
+
             <View style={styles.skillsWrapper}>
               {skills.map((skill) => (
                 <TouchableOpacity
@@ -91,6 +102,7 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
             </View>
 
             <Text style={styles.filterLabel}>Minimal reyting</Text>
+
             <View style={styles.ratingWrapper}>
               {[3, 4, 4.5, 5].map((rating) => (
                 <TouchableOpacity
@@ -102,12 +114,15 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
                   ]}
                 >
                   <MaterialCommunityIcons name="star" size={16} color={minRating === rating ? '#fff' : '#9ca3af'} />
-                  <Text style={minRating === rating ? styles.ratingTextActive : styles.ratingText}>{rating}+</Text>
+                  <Text style={minRating === rating ? styles.ratingTextActive : styles.ratingText}>
+                    {rating}+
+                  </Text>
                 </TouchableOpacity>
               ))}
             </View>
 
-            <Text style={styles.filterLabel}>Narx oralig&apos;i (soat/sum)</Text>
+            <Text style={styles.filterLabel}>Narx oralig'i (soat/sum)</Text>
+
             <View style={styles.priceWrapper}>
               <TextInput
                 placeholder="Min"
@@ -131,61 +146,87 @@ export const SearchFilterScreen: React.FC<SearchFilterScreenProps> = ({
 
         {/* Results */}
         <Text style={styles.resultsText}>{professionals.length} ta usta topildi</Text>
+
         {professionals.map((usta) => (
-          <TouchableOpacity
+          <MotiView
             key={usta.id}
-            onPress={() => onSelectUsta(usta.id)}
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 500, easing: Easing.out(Easing.ease) }}
             style={styles.ustaCard}
           >
             <View style={styles.ustaAvatar}>
-              <Text style={styles.ustaAvatarText}>{usta.name.split(' ').map(n => n[0]).join('')}</Text>
+              <Text style={styles.ustaAvatarText}>
+                {usta.name.split(' ').map(n => n[0]).join('')}
+              </Text>
             </View>
+
             <View style={styles.ustaInfo}>
               <Text style={styles.ustaName}>{usta.name}</Text>
               <Text style={styles.ustaSkill}>{usta.skill}</Text>
+
               <View style={styles.ustaStats}>
                 <View style={styles.ustaRating}>
                   <MaterialCommunityIcons name="star" size={14} color="#facc15" />
                   <Text style={styles.ustaRatingText}>{usta.rating}</Text>
                   <Text style={styles.ustaReviews}>({usta.reviews})</Text>
                 </View>
+
                 <View style={styles.ustaDistance}>
                   <MaterialCommunityIcons name="map-marker" size={14} color="#9ca3af" />
                   <Text style={styles.ustaDistanceText}>{usta.distance}</Text>
                 </View>
               </View>
             </View>
+
             <View style={styles.ustaPrice}>
               <Text style={styles.ustaPriceText}>{usta.price}</Text>
               <Text style={styles.ustaPriceUnit}>soat/sum</Text>
             </View>
-          </TouchableOpacity>
+          </MotiView>
         ))}
 
-        {/* Bottom Navigation */}
-        <View style={styles.bottomNav}>
-          <TouchableOpacity onPress={onHomeClick} style={styles.bottomNavButton}>
-            <MaterialCommunityIcons name="home" size={24} color="#9ca3af" />
-            <Text style={styles.bottomNavText}>Bosh sahifa</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {}} style={styles.bottomNavButton}>
-            <MaterialCommunityIcons name="magnify" size={24} color="#3b82f6" />
-            <Text style={[styles.bottomNavText, { color: '#3b82f6' }]}>Qidiruv</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onOrdersClick} style={styles.bottomNavButton}>
-            <MaterialCommunityIcons name="wrench" size={24} color="#9ca3af" />
-            <Text style={styles.bottomNavText}>Buyurtmalar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={onProfileClick} style={styles.bottomNavButton}>
-            <View style={styles.profileAvatar} />
-            <Text style={styles.bottomNavText}>Profil</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
+      {/* --- Bottom Navigation (HomeScreen bilan bir xil) --- */}
+      <View style={styles.bottomNav}>
+        <TouchableOpacity
+          style={[styles.navButton, currentTab === 'home' && styles.navButtonActive]}
+          onPress={onHomeClick}
+        >
+          <HomeIcon size={24} color={currentTab === 'home' ? '#3B82F6' : '#9CA3AF'} />
+          <Text style={[styles.navText, currentTab === 'home' && styles.navTextActive]}>Bosh sahifa</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navButton, currentTab === 'search' && styles.navButtonActive]}
+          onPress={onSearchClick}
+        >
+          <Search size={24} color={currentTab === 'search' ? '#3B82F6' : '#9CA3AF'} />
+          <Text style={[styles.navText, currentTab === 'search' && styles.navTextActive]}>Qidiruv</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navButton, currentTab === 'orders' && styles.navButtonActive]}
+          onPress={onOrdersClick}
+        >
+          <Wrench size={24} color={currentTab === 'orders' ? '#3B82F6' : '#9CA3AF'} />
+          <Text style={[styles.navText, currentTab === 'orders' && styles.navTextActive]}>Buyurtmalar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navButton, currentTab === 'profile' && styles.navButtonActive]}
+          onPress={onProfileClick}
+        >
+          <View style={[styles.profileIcon, currentTab === 'profile' ? { backgroundColor: '#3B82F6' } : { backgroundColor: '#9CA3AF' }]} />
+          <Text style={[styles.navText, currentTab === 'profile' && styles.navTextActive]}>Profil</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
+// --- STYLES ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#1a1f2e' },
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, paddingHorizontal: 16, paddingTop: 16 },
@@ -213,9 +254,9 @@ const styles = StyleSheet.create({
   priceInput: { flex: 1, backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 6, color: '#fff', marginRight: 8 },
   resultsText: { color: '#9ca3af', marginVertical: 12, paddingHorizontal: 16 },
   ustaCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#252b3b', borderWidth: 1, borderColor: '#374151', borderRadius: 16, padding: 12, marginHorizontal: 16, marginBottom: 12 },
-  ustaAvatar: { width: 64, height: 64, borderRadius: 16, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center' },
+  ustaAvatar: { width: 64, height: 64, borderRadius: 16, backgroundColor: '#3b82f6', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   ustaAvatarText: { color: '#fff', fontSize: 20, fontWeight: 'bold' },
-  ustaInfo: { flex: 1, marginLeft: 12 },
+  ustaInfo: { flex: 1 },
   ustaName: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   ustaSkill: { color: '#9ca3af', fontSize: 14 },
   ustaStats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
@@ -227,8 +268,10 @@ const styles = StyleSheet.create({
   ustaPrice: { alignItems: 'flex-end' },
   ustaPriceText: { color: '#f97316', fontSize: 14, fontWeight: 'bold' },
   ustaPriceUnit: { color: '#9ca3af', fontSize: 12 },
-  bottomNav: { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, borderTopWidth: 1, borderColor: '#374151', backgroundColor: '#252b3b', position: 'absolute', bottom: 0, width: '100%' },
-  bottomNavButton: { alignItems: 'center', justifyContent: 'center' },
-  bottomNavText: { color: '#9ca3af', fontSize: 10, marginTop: 2 },
-  profileAvatar: { width: 24, height: 24, borderRadius: 12, backgroundColor: '#9ca3af' },
+  bottomNav: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingVertical: 12, backgroundColor: '#252b3b' },
+  navButton: { alignItems: 'center' },
+  navButtonActive: {},
+  navText: { color: '#9CA3AF', fontSize: 12 },
+  navTextActive: { color: '#3B82F6' },
+  profileIcon: { width: 24, height: 24, borderRadius: 12, marginBottom: 2 },
 });
