@@ -103,6 +103,7 @@ export default function App() {
           />
         );
       case 'ustaProfile':
+        
         return (
           <UstaProfileScreen
             onBack={() => setCurrentScreen('search')}
