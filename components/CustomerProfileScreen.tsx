@@ -21,6 +21,7 @@ export function CustomerProfileScreen({ onBack, onHomeClick, onSearchClick, onOr
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
+      
     }).start();
     Animated.timing(animatedTranslateY, {
       toValue: 0,
