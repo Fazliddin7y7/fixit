@@ -11,7 +11,7 @@ interface UserDashboardProps {
   onProfileClick: () => void;
 }
 
-export function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileClick }: UserDashboardProps) {
+export  function UserDashboard({ onBack, onHomeClick, onSearchClick, onProfileClick }: UserDashboardProps) {
   const [activeTab, setActiveTab] = useState<'active' | 'history'>('active');
 
   const activeBookings = [
